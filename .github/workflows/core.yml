@@ -1,0 +1,35 @@
+name: Main
+on:
+  push:
+    branches: [main]
+  pull_request:
+    branches: [main]
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    env:
+      HUSKY: 0
+    permissions:
+      id-token: write
+      contents: read
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+      - name: Install bun
+        uses: oven-sh/setup-bun@v2
+      - name: Install dependencies
+        run: bun install
+      - name: Run tests
+        run: bun run test
+      # - name: Build
+        # run: bun run build
+      # - name: Setup Node
+        # uses: actions/setup-node@v2
+        # with:
+          # node-version: '14.x'
+          # registry-url: 'https://registry.npmjs.org'
+      # - name: Publish package on NPM
+        # run: npm publish
+        # env:
+          # NODE_AUTH_TOKEN: ${{ secrets.NPM_TOKEN }}

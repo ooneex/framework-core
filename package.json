@@ -1,0 +1,39 @@
+{
+  "name": "@ooneex/core",
+  "type": "module",
+  "main": "dist/index.js",
+  "types": "dist/index.d.ts",
+  "version": "0.0.1",
+  "description": "Core utilities and interfaces for the Ooneex framework",
+  "scripts": {
+    "test:watch": "bun test tests --watch",
+    "test:coverage": "bun test tests --coverage",
+    "test:coverage:watch": "bun test tests --coverage --watch",
+    "fmt": "bunx @biomejs/biome check --write .",
+    "lint": "tsc --noEmit && bunx @biomejs/biome check .",
+    "build": "tsup --tsconfig tsconfig.prod.json --dts-only && bun run build.ts"
+  },
+  "homepage": "https://github.com/ooneex/packages",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/ooneex/packages.git"
+  },
+  "bugs": {
+    "url": "https://github.com/ooneex/packages/issues"
+  },
+  "keywords": ["bun", "framework", "api", "rest"],
+  "devDependencies": {
+    "@biomejs/biome": "^1.9.4",
+    "@types/accept-language-parser": "^1.5.7",
+    "@types/bun": "^1.2.10",
+    "tsup": "^8.4.0",
+    "typescript": "^5.8.3"
+  },
+  "peerDependencies": {},
+  "dependencies": {
+    "accept-language-parser": "^1.5.0"
+  },
+  "author": "Ooneex",
+  "license": "MIT",
+  "files": ["dist/**/*.js", "dist/**/*.d.ts"]
+}
