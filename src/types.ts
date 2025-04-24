@@ -55,6 +55,7 @@ export type ContextType<
   Params = Record<string, ScalarType>,
   Payload = Record<string, unknown>,
   Queries = Record<string, ScalarType>,
+  EnvVars = Record<string, ScalarType>,
 > = {
   state: State;
   request: IRequest;
@@ -71,6 +72,7 @@ export type ContextType<
   ip: string;
   host: string;
   bearerToken: string | null;
+  envVars: EnvVars;
 
   // user?: IUser;
   // isAuthenticated?: boolean;

@@ -1,8 +1,21 @@
 import type { BunRequest, Server } from 'bun';
 import { HttpRequest } from './HttpRequest';
+import { parseEnvVars } from './env';
 import type { ContextType } from './types';
 
-export class App {}
+export class App {
+  public readonly port: number;
+  public readonly hostname: string;
+
+  constructor(config?: { port: number; hostname: string }) {
+    this.port = config?.port ?? 80;
+    this.hostname = config?.hostname ?? '0.0.0.0';
+  }
+
+  async start() {
+    // Start the app here
+  }
+}
 
 const handler = async (req: BunRequest, server: Server) => {
   let payload = {};
@@ -40,5 +53,6 @@ const handler = async (req: BunRequest, server: Server) => {
     ip: request.ip,
     host: request.host,
     bearerToken: request.bearerToken,
+    envVars: parseEnvVars(),
   };
 };
