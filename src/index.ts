@@ -12,6 +12,7 @@ export { Header } from './header/Header';
 export { HeaderChecker } from './header/HeaderChecker';
 export { ReadonlyHeader } from './header/ReadonlyHeader';
 export { HttpRequest } from './HttpRequest';
+export { HttpResponse } from './HttpResponse';
 
 export { Url } from './Url';
 

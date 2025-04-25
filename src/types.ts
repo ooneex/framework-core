@@ -4,7 +4,7 @@ import type { Exception } from './exception/Exception';
 import type { HEADERS } from './headers';
 import type { LOCALES } from './locales';
 import type { MIME_TYPES } from './mimes';
-import type { StatusCode, StatusText } from './status';
+import type { STATUS_CODE, STATUS_TEXT } from './status';
 
 export type ScalarType = boolean | number | bigint | string;
 
@@ -47,8 +47,8 @@ export type ControllerActionArgsType = (
   method: MethodType,
 ) => MethodDecorator;
 
-export type { StatusCode as StatusCodeType };
-export type { StatusText as StatusTextType };
+export type StatusCodeType = (typeof STATUS_CODE)[keyof typeof STATUS_CODE];
+export type StatusTextType = (typeof STATUS_TEXT)[keyof typeof STATUS_TEXT];
 
 export type ContextType<
   State = Record<string, unknown>,
@@ -114,7 +114,7 @@ export interface IRequest {
   readonly host: string;
   readonly referer: string | null;
   readonly bearerToken: string | null;
-  readonly language: LanguageType | null;
+  readonly language: LanguageType;
   readonly native: Readonly<BunRequest>;
 }
 
@@ -153,4 +153,33 @@ export interface IReadonlyHeader extends IHeaderChecker {
 
 export interface IHeader extends IReadonlyHeader {
   readonly native: Headers;
+}
+
+export interface IResponse {
+  readonly header: IHeader;
+  readonly cookies: CookieMap;
+  json: (
+    data: Record<string, unknown>,
+    status?: StatusCodeType,
+    charset?: CharsetType,
+  ) => this;
+  exception: (
+    message: string,
+    data?: Record<string, unknown> | null,
+    status?: StatusCodeType,
+  ) => this;
+  notFound: (
+    message: string,
+    data?: Record<string, unknown> | null,
+    status?: StatusCodeType,
+  ) => this;
+  redirect: (url: string | URL, status?: StatusCodeType) => Response;
+  getData: () => Record<string, unknown> | ReadableStream | null;
+  build: (request: IRequest) => Response;
+  isSuccessful: () => boolean;
+  isInformational: () => boolean;
+  isRedirect: () => boolean;
+  isClientError: () => boolean;
+  isServerError: () => boolean;
+  isError: () => boolean;
 }

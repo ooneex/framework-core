@@ -67,8 +67,6 @@ export const STATUS_CODE = {
   NetworkAuthenticationRequired: 511,
 } as const;
 
-export type StatusCode = (typeof STATUS_CODE)[keyof typeof STATUS_CODE];
-
 export const STATUS_TEXT = {
   [STATUS_CODE.Accepted]: 'Accepted',
   [STATUS_CODE.AlreadyReported]: 'Already Reported',
@@ -134,8 +132,6 @@ export const STATUS_TEXT = {
   [STATUS_CODE.UseProxy]: 'Use Proxy',
   [STATUS_CODE.VariantAlsoNegotiates]: 'Variant Also Negotiates',
 } as const;
-
-export type StatusText = (typeof STATUS_TEXT)[keyof typeof STATUS_TEXT];
 
 export type InformationalStatus =
   | typeof STATUS_CODE.Continue
