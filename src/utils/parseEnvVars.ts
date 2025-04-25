@@ -1,5 +1,5 @@
 import { parseString, toCamelCase } from '@';
-import type { ScalarType } from './types';
+import type { ScalarType } from '../types';
 
 export const parseEnvVars = <T = Record<string, ScalarType>>(): T => {
   const vars: Record<string, ScalarType> = {};

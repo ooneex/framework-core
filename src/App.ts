@@ -1,7 +1,7 @@
 import type { BunRequest, Server } from 'bun';
 import { HttpRequest } from './HttpRequest';
-import { parseEnvVars } from './env';
 import type { ContextType } from './types';
+import { parseEnvVars } from './utils/parseEnvVars';
 
 export class App {
   public readonly port: number;

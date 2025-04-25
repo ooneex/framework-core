@@ -1,7 +1,6 @@
 export * from './types';
 export * from './status';
 export * from './locales';
-export * from './env';
 export { Env } from './enums';
 
 export { Exception } from './exception/Exception';
@@ -19,5 +18,6 @@ export { Url } from './Url';
 export { parseString } from './utils/parseString';
 export { trim } from './utils/trim';
 export { toCamelCase } from './utils/toCamelCase';
+export { parseEnvVars } from './utils/parseEnvVars';
 
 export { App } from './App';
