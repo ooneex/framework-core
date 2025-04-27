@@ -25,8 +25,26 @@ describe('toCamelCase', () => {
   });
 
   it('trims whitespace', () => {
-    const result = toCamelCase(' deno Is AWESOME ');
-    const expected = 'denoIsAwesome';
+    const result = toCamelCase(' bun Is AWESOME ');
+    const expected = 'bunIsAwesome';
+    expect(result).toBe(expected);
+  });
+
+  it('handles strings with numbers', () => {
+    const result = toCamelCase('version 2.0 release');
+    const expected = 'version20Release';
+    expect(result).toBe(expected);
+  });
+
+  it('handles strings with only special characters', () => {
+    const result = toCamelCase('!@#$%^&*()');
+    const expected = '';
+    expect(result).toBe(expected);
+  });
+
+  it('handles strings with non-English characters', () => {
+    const result = toCamelCase('café au lait');
+    const expected = 'caféAuLait';
     expect(result).toBe(expected);
   });
 });
