@@ -120,4 +120,88 @@ describe('HttpResponse', () => {
       });
     });
   });
+
+  describe('isSuccessful', () => {
+    it('should return true for successful status codes', () => {
+      const response = new HttpResponse();
+      response.json({}, 200);
+      expect(response.isSuccessful()).toBe(true);
+    });
+
+    it('should return false for non-successful status codes', () => {
+      const response = new HttpResponse();
+      response.json({}, 100);
+      expect(response.isSuccessful()).toBe(false);
+    });
+  });
+
+  describe('isInformational', () => {
+    it('should return true for informational status codes', () => {
+      const response = new HttpResponse();
+      response.json({}, 100);
+      expect(response.isInformational()).toBe(true);
+    });
+
+    it('should return false for non-informational status codes', () => {
+      const response = new HttpResponse();
+      response.json({}, 200);
+      expect(response.isInformational()).toBe(false);
+    });
+  });
+
+  describe('isRedirect', () => {
+    it('should return true for redirect status codes', () => {
+      const response = new HttpResponse();
+      response.json({}, 301);
+      expect(response.isRedirect()).toBe(true);
+    });
+
+    it('should return false for non-redirect status codes', () => {
+      const response = new HttpResponse();
+      response.json({}, 200);
+      expect(response.isRedirect()).toBe(false);
+    });
+  });
+
+  describe('isClientError', () => {
+    it('should return true for client error status codes', () => {
+      const response = new HttpResponse();
+      response.json({}, 404);
+      expect(response.isClientError()).toBe(true);
+    });
+
+    it('should return false for non-client error status codes', () => {
+      const response = new HttpResponse();
+      response.json({}, 200);
+      expect(response.isClientError()).toBe(false);
+    });
+  });
+
+  describe('isServerError', () => {
+    it('should return true for server error status codes', () => {
+      const response = new HttpResponse();
+      response.json({}, 500);
+      expect(response.isServerError()).toBe(true);
+    });
+
+    it('should return false for non-server error status codes', () => {
+      const response = new HttpResponse();
+      response.json({}, 200);
+      expect(response.isServerError()).toBe(false);
+    });
+  });
+
+  describe('isError', () => {
+    it('should return true for server error status codes', () => {
+      const response = new HttpResponse();
+      response.json({}, 500);
+      expect(response.isError()).toBe(true);
+    });
+
+    it('should return false for non-server error status codes', () => {
+      const response = new HttpResponse();
+      response.json({}, 200);
+      expect(response.isError()).toBe(false);
+    });
+  });
 });

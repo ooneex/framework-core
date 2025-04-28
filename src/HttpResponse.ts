@@ -1,6 +1,7 @@
 import { CookieMap } from 'bun';
 import { Header } from './header/Header';
 import {
+  STATUS_CODE,
   STATUS_TEXT,
   isClientErrorStatus,
   isErrorStatus,
@@ -40,7 +41,7 @@ export class HttpResponse implements IResponse {
   public exception(
     message: string,
     data: Record<string, unknown> | null = null,
-    status: StatusCodeType = 500,
+    status: StatusCodeType = STATUS_CODE.InternalServerError,
   ): this {
     this.message = message;
     this.data = data ?? {};
@@ -56,12 +57,15 @@ export class HttpResponse implements IResponse {
   public notFound(
     message: string,
     data: Record<string, unknown> | null = null,
-    status: StatusCodeType = 404,
+    status: StatusCodeType = STATUS_CODE.NotFound,
   ): this {
     return this.exception(message, data, status);
   }
 
-  public redirect(url: string | URL, status: StatusCodeType = 307): Response {
+  public redirect(
+    url: string | URL,
+    status: StatusCodeType = STATUS_CODE.TemporaryRedirect,
+  ): Response {
     return Response.redirect(url, status);
   }
 
