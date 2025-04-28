@@ -101,4 +101,30 @@ describe('Router', () => {
     });
     expect(router.getRoutes().size).toBe(2);
   });
+
+  it('should return null for non-existing path', () => {
+    const router = new Router();
+
+    router.addRoute({
+      name: 'add_user',
+      path: '/users',
+      method: 'POST',
+      controller: TestController,
+    });
+
+    expect(router.findRouteByPath('/non-existing')).toBe(null);
+  });
+
+  it('should return null for non-existing route name', () => {
+    const router = new Router();
+
+    router.addRoute({
+      name: 'add_user',
+      path: '/users',
+      method: 'POST',
+      controller: TestController,
+    });
+
+    expect(router.findRouteByName('non-existing')).toBe(null);
+  });
 });
