@@ -8,6 +8,28 @@ describe('Router', () => {
     }
   }
 
+  it('should support method chaining for addRoute', () => {
+    const router = new Router();
+
+    const result = router
+      .addRoute({
+        name: 'add_user',
+        path: '/users',
+        method: 'POST',
+        controller: TestController,
+      })
+      .addRoute({
+        name: 'get_user',
+        path: '/users',
+        method: 'GET',
+        controller: TestController,
+      });
+
+    expect(result).toBe(router);
+    expect(router.findRouteByName('add_user')).toBeDefined();
+    expect(router.findRouteByName('get_user')).toBeDefined();
+  });
+
   it('should ensure route is added', () => {
     const router = new Router();
 
@@ -112,7 +134,7 @@ describe('Router', () => {
       controller: TestController,
     });
 
-    expect(router.findRouteByPath('/non-existing')).toBe(null);
+    expect(router.findRouteByPath('/non-existing')).toBeNull();
   });
 
   it('should return null for non-existing route name', () => {
@@ -126,5 +148,50 @@ describe('Router', () => {
     });
 
     expect(router.findRouteByName('non-existing')).toBe(null);
+  });
+
+  it('should store and retrieve routes with validators and middlewares', () => {
+    const router = new Router();
+
+    router.addRoute({
+      name: 'create_post',
+      path: '/posts',
+      method: 'POST',
+      validators: [],
+      middlewares: [],
+      controller: TestController,
+    });
+
+    const route = router.findRouteByName('create_post');
+
+    expect(route?.validators).toBeArrayOfSize(0);
+    expect(route?.middlewares).toBeArrayOfSize(0);
+  });
+
+  it('should handle routes with all HTTP methods', () => {
+    const router = new Router();
+    const methods: Array<
+      'GET' | 'POST' | 'PUT' | 'DELETE' | 'PATCH' | 'OPTIONS' | 'HEAD'
+    > = ['GET', 'POST', 'PUT', 'DELETE', 'PATCH', 'OPTIONS', 'HEAD'];
+
+    for (const method of methods) {
+      router.addRoute({
+        name: `test_${method.toLowerCase()}`,
+        path: '/api',
+        method,
+        controller: TestController,
+      });
+    }
+
+    const routes = router.findRouteByPath('/api');
+
+    expect(routes).not.toBeNull();
+    expect(routes).toBeArrayOfSize(7);
+
+    for (const method of methods) {
+      const route = routes?.find((r) => r.method === method) ?? null;
+      expect(route).not.toBeNull();
+      expect(route?.name).toBe(`test_${method.toLowerCase()}`);
+    }
   });
 });
