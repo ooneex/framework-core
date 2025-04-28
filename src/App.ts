@@ -1,5 +1,6 @@
 import type { BunRequest, Server } from 'bun';
 import { HttpRequest } from './HttpRequest';
+import { HttpResponse } from './HttpResponse';
 import type { ContextType } from './types';
 import { parseEnvVars } from './utils/parseEnvVars';
 
@@ -7,7 +8,12 @@ export class App {
   public readonly port: number;
   public readonly hostname: string;
 
-  constructor(config?: { port: number; hostname: string }) {
+  // validate envVars
+  constructor(config?: {
+    port?: number;
+    hostname?: string;
+    validators?: string[];
+  }) {
     this.port = config?.port ?? 80;
     this.hostname = config?.hostname ?? '0.0.0.0';
   }
@@ -17,7 +23,13 @@ export class App {
   }
 }
 
-const handler = async (req: BunRequest, server: Server) => {
+const handler = async (config: {
+  req: BunRequest;
+  server: Server;
+}) => {
+  const req = config.req;
+  const server = config.server;
+
   let payload = {};
   let form: FormData | null = null;
 
@@ -37,9 +49,12 @@ const handler = async (req: BunRequest, server: Server) => {
     form,
   });
 
+  const response = new HttpResponse(request.cookies);
+
   const context: ContextType = {
     state: {},
     request: request,
+    response: response,
     exception: null,
     params: request.params,
     payload: request.payload,
