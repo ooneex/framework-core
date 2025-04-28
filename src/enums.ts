@@ -5,3 +5,15 @@ export enum Env {
   Production = 'production',
   Test = 'test',
 }
+
+export enum EScope {
+  Env = 'env',
+  Payload = 'payload',
+  Params = 'params',
+  Queries = 'queries',
+}
+
+export enum EMiddlewareScope {
+  Request = 'request',
+  Response = 'response',
+}

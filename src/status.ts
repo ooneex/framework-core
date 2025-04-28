@@ -1,3 +1,5 @@
+import type { StatusCodeType } from './types.ts';
+
 export const STATUS_CODE = {
   Continue: 100,
   SwitchingProtocols: 101,
@@ -205,8 +207,8 @@ export type ServerErrorStatus =
 
 export type ErrorStatus = ClientErrorStatus | ServerErrorStatus;
 
-export const isStatus = (status: number): status is StatusCode => {
-  return Object.values(STATUS_CODE).includes(status as StatusCode);
+export const isStatus = (status: number): status is StatusCodeType => {
+  return Object.values(STATUS_CODE).includes(status as StatusCodeType);
 };
 
 export const isInformationalStatus = (

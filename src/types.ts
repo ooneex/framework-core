@@ -1,5 +1,5 @@
 import type { BunRequest, CookieMap } from 'bun';
-import type { Env } from './enums';
+import type { EMiddlewareScope, EScope, Env } from './enums';
 import type { Exception } from './exception/Exception';
 import type { HEADERS } from './headers';
 import type { LOCALES } from './locales';
@@ -9,6 +9,8 @@ import type { STATUS_CODE, STATUS_TEXT } from './status';
 export type ScalarType = boolean | number | bigint | string;
 
 export type EnvType = `${Env}`;
+export type ScopeType = `${EScope}`;
+export type MiddlewareScopeType = `${EMiddlewareScope}`;
 
 export type MethodType =
   | 'GET'
@@ -38,31 +40,25 @@ export type MimeType = (typeof MIME_TYPES)[number];
 export type HeaderFieldType = (typeof HEADERS)[number] | `X-Custom-${string}`;
 
 export type RouteConfigType = {
+  name: string;
   path: `/${string}`;
   method: MethodType;
+  validators?: string[];
+  middlewares?: string[];
+  controller: ControllerType;
 };
-
-export type ControllerActionArgsType = (
-  path: string,
-  method: MethodType,
-) => MethodDecorator;
 
 export type StatusCodeType = (typeof STATUS_CODE)[keyof typeof STATUS_CODE];
 export type StatusTextType = (typeof STATUS_TEXT)[keyof typeof STATUS_TEXT];
 
-export type ContextType<
-  State = Record<string, unknown>,
-  Params = Record<string, ScalarType>,
-  Payload = Record<string, unknown>,
-  Queries = Record<string, ScalarType>,
-  EnvVars = Record<string, ScalarType>,
-> = {
-  state: State;
+export type ContextType = {
+  state: Record<string, unknown>;
   request: IRequest;
+  response: IResponse;
   exception: Exception | null;
-  params: Params;
-  payload: Payload;
-  queries: Queries;
+  params: Record<string, ScalarType>;
+  payload: Record<string, unknown>;
+  queries: Record<string, ScalarType>;
   cookies: CookieMap | null;
   form: FormData | null;
   language: LanguageType;
@@ -72,12 +68,7 @@ export type ContextType<
   ip: string;
   host: string;
   bearerToken: string | null;
-  envVars: EnvVars;
-
-  // user?: IUser;
-  // isAuthenticated?: boolean;
-  // response: HttpResponse;
-  // files?: Record<string, unknown>;
+  envVars: Record<string, ScalarType>;
 };
 
 export interface IUrl {
@@ -183,3 +174,11 @@ export interface IResponse {
   isServerError: () => boolean;
   isError: () => boolean;
 }
+
+export type ControllerType = {
+  new (
+    ...args: any[]
+  ): {
+    action: (context: ContextType) => Promise<IResponse> | IResponse;
+  };
+};
