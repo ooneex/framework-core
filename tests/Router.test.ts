@@ -1,13 +1,24 @@
 import { describe, expect, it } from 'bun:test';
-import { Router, RouterException } from '@';
+import { type ContextType, Router, RouterException } from '@';
 
 describe('Router', () => {
+  class TestController {
+    public action({ response }: ContextType) {
+      return response.json({ message: 'Hello, World!' });
+    }
+  }
+
   it('should ensure route is added', () => {
     const router = new Router();
 
     expect(router.findRouteByName('add_user')).toBe(null);
 
-    router.addRoute({ name: 'add_user', path: '/users', method: 'POST' });
+    router.addRoute({
+      name: 'add_user',
+      path: '/users',
+      method: 'POST',
+      controller: TestController,
+    });
 
     expect(router.findRouteByName('add_user')).toBeDefined();
     expect(router.findRouteByName('add_user')?.name).toBe('add_user');
@@ -20,8 +31,18 @@ describe('Router', () => {
 
     expect(router.findRouteByPath('/users')).toBe(null);
 
-    router.addRoute({ name: 'add_user', path: '/users', method: 'POST' });
-    router.addRoute({ name: 'retrieve_user', path: '/users', method: 'GET' });
+    router.addRoute({
+      name: 'add_user',
+      path: '/users',
+      method: 'POST',
+      controller: TestController,
+    });
+    router.addRoute({
+      name: 'retrieve_user',
+      path: '/users',
+      method: 'GET',
+      controller: TestController,
+    });
 
     expect(router.findRouteByPath('/users')?.length).toBe(2);
   });
@@ -30,8 +51,18 @@ describe('Router', () => {
     const router = new Router();
 
     const throwableFunction = () => {
-      router.addRoute({ name: 'add_user', path: '/users', method: 'POST' });
-      router.addRoute({ name: 'add_user', path: '/users', method: 'GET' });
+      router.addRoute({
+        name: 'add_user',
+        path: '/users',
+        method: 'POST',
+        controller: TestController,
+      });
+      router.addRoute({
+        name: 'add_user',
+        path: '/users',
+        method: 'GET',
+        controller: TestController,
+      });
     };
 
     expect(throwableFunction).toThrow(RouterException);
@@ -42,12 +73,32 @@ describe('Router', () => {
 
     expect(router.getRoutes().size).toBe(0);
 
-    router.addRoute({ name: 'add_user', path: '/users', method: 'POST' });
-    router.addRoute({ name: 'retrieve_user', path: '/users', method: 'GET' });
-    router.addRoute({ name: 'delete_user', path: '/users', method: 'DELETE' });
+    router.addRoute({
+      name: 'add_user',
+      path: '/users',
+      method: 'POST',
+      controller: TestController,
+    });
+    router.addRoute({
+      name: 'retrieve_user',
+      path: '/users',
+      method: 'GET',
+      controller: TestController,
+    });
+    router.addRoute({
+      name: 'delete_user',
+      path: '/users',
+      method: 'DELETE',
+      controller: TestController,
+    });
     expect(router.getRoutes().size).toBe(1);
 
-    router.addRoute({ name: 'add_post', path: '/posts', method: 'POST' });
+    router.addRoute({
+      name: 'add_post',
+      path: '/posts',
+      method: 'POST',
+      controller: TestController,
+    });
     expect(router.getRoutes().size).toBe(2);
   });
 });
