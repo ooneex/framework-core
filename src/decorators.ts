@@ -1,6 +1,7 @@
 import { router } from './Router';
 import { container } from './container';
 import { ContainerScope } from './enums';
+import { ServiceDecoratorException } from './exception/ServiceDecoratorException';
 import type {
   ConfigDecoratorType,
   ContainerScopeType,
@@ -140,6 +141,14 @@ export const service = (
   scope: ContainerScopeType = ContainerScope.Singleton,
 ) => {
   return (service: ServiceDecoratorType) => {
+    const name = service.prototype.constructor.name;
+
+    if (!name.endsWith('Service')) {
+      throw new ServiceDecoratorException(
+        `Service decorator can only be used on service classes. ${name} must end with Service keyword.`,
+      );
+    }
+
     registerWithScope(service, scope);
   };
 };

@@ -5,6 +5,7 @@ import {
   HttpResponse,
   type IResponse,
   Route,
+  ServiceDecoratorException,
   config,
   container,
   inject,
@@ -420,5 +421,54 @@ describe('Controller decorator', () => {
     expect(controller).toBeInstanceOf(PostController);
     expect(controller.postService).toBeInstanceOf(PostService);
     expect(controller.postService.config).toBeInstanceOf(PostConfig);
+  });
+
+  describe('service decorator', () => {
+    it('should throw error if class name does not end with Service', () => {
+      expect(() => {
+        @service()
+        class _InvalidClass {
+          public execute<T>(): T {
+            return 'execute' as T;
+          }
+        }
+      }).toThrow(ServiceDecoratorException);
+
+      expect(() => {
+        @service()
+        class _InvalidClass {
+          public execute<T>(): T {
+            return 'execute' as T;
+          }
+        }
+      }).toThrow(
+        'Service decorator can only be used on service classes. _InvalidClass must end with Service keyword.',
+      );
+    });
+
+    it('should not throw error if class name ends with Service', () => {
+      expect(() => {
+        @service()
+        // biome-ignore lint/correctness/noUnusedVariables: trust me
+        class ValidService {
+          public execute<T>(): T {
+            return 'execute' as T;
+          }
+        }
+      }).not.toThrow();
+    });
+
+    it('should register services', () => {
+      @service()
+      class TestService {
+        public execute<T>(): T {
+          return 'execute' as T;
+        }
+      }
+
+      const instance = container.get<TestService>(TestService);
+      expect(instance).toBeDefined();
+      expect(instance).toBeInstanceOf(TestService);
+    });
   });
 });
