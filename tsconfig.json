@@ -20,9 +20,10 @@
     "noUnusedLocals": false,
     "noUnusedParameters": false,
     "noPropertyAccessFromIndexSignature": false,
+    "strictPropertyInitialization": false,
+    // Type checking
     "emitDecoratorMetadata": true,
     "experimentalDecorators": true,
-    "strictPropertyInitialization": false,
 
     // "outDir": "./dist",
     // "rootDir": "./src",

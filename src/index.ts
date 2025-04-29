@@ -23,3 +23,4 @@ export { toCamelCase } from './utils/toCamelCase';
 export { trim } from './utils/trim';
 export { capitalizeWord } from './utils/capitalizeWord';
 export { splitToWords } from './utils/splitToWords';
+export { container, inject } from './container';
