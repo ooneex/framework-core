@@ -11,6 +11,7 @@ export { MethodNotAllowedException } from './exception/MethodNotAllowedException
 export { NotFoundException } from './exception/NotFoundException';
 export { RouterException } from './exception/RouterException';
 export { ConfigDecoratorException } from './exception/ConfigDecoratorException';
+export { ServiceDecoratorException } from './exception/ServiceDecoratorException';
 export { Header } from './header/Header';
 export { HeaderChecker } from './header/HeaderChecker';
 export { ReadonlyHeader } from './header/ReadonlyHeader';
