@@ -1,16 +1,18 @@
 import type { BunRequest, CookieMap } from 'bun';
-import type { EMiddlewareScope, EScope, Env } from './enums';
+import type { BunFile, S3File, S3Options } from 'bun';
+import type { ContainerScope, EMiddlewareScope, EScope, Env } from './enums';
 import type { Exception } from './exception/Exception';
 import type { HEADERS } from './headers';
 import type { LOCALES } from './locales';
 import type { MIME_TYPES } from './mimes';
 import type { STATUS_CODE, STATUS_TEXT } from './status';
 
+export type { BunFile, S3File, S3Options };
 export type ScalarType = boolean | number | bigint | string;
-
 export type EnvType = `${Env}`;
 export type ScopeType = `${EScope}`;
 export type MiddlewareScopeType = `${EMiddlewareScope}`;
+export type ContainerScopeType = `${ContainerScope}`;
 
 export type MethodType =
   | 'GET'
@@ -45,7 +47,7 @@ export type RouteConfigType = {
   method: MethodType;
   validators?: string[];
   middlewares?: string[];
-  controller: ControllerType;
+  controller: ControllerDecoratorType;
 };
 
 export type StatusCodeType = (typeof STATUS_CODE)[keyof typeof STATUS_CODE];
@@ -175,10 +177,98 @@ export interface IResponse {
   isError: () => boolean;
 }
 
-export type ControllerType = {
+export interface IStorage {
+  exists(key: string): Promise<boolean>;
+  delete(key: string): Promise<void>;
+  putFile(key: string, localPath: string): Promise<number>;
+  put(
+    key: string,
+    content:
+      | string
+      | ArrayBufferView
+      | ArrayBuffer
+      | SharedArrayBuffer
+      | Request
+      | Response
+      | BunFile
+      | S3File
+      | Blob,
+  ): Promise<number>;
+  getAsJson(key: string): Promise<any>;
+  getAsArrayBuffer(key: string): Promise<ArrayBuffer>;
+  getAsStream(key: string): ReadableStream;
+}
+
+export type ControllerDecoratorType = {
   new (
     ...args: any[]
   ): {
     action: (context: ContextType) => Promise<IResponse> | IResponse;
   };
 };
+
+export interface IController {
+  action: (context: ContextType) => Promise<IResponse> | IResponse;
+}
+
+export type ConfigDecoratorType = {
+  new (
+    ...args: any[]
+  ): {
+    get: <T>(...args: any[]) => T;
+  };
+};
+
+export interface IConfig {
+  get: <T>(...args: any[]) => Promise<T> | T;
+}
+
+export type ServiceDecoratorType = {
+  new (
+    ...args: any[]
+  ): {
+    execute: <T>(...args: any[]) => Promise<T> | T;
+  };
+};
+
+export interface IService {
+  execute: <T>(...args: any[]) => Promise<T> | T;
+}
+
+export type DatabaseDecoratorType = {
+  new (
+    ...args: any[]
+  ): {
+    open: <T>(...args: any[]) => Promise<T> | T;
+    close: <T>(...args: any[]) => Promise<T> | T;
+  };
+};
+
+export interface IDatabase {
+  open: <T>(...args: any[]) => Promise<T> | T;
+  close: <T>(...args: any[]) => Promise<T> | T;
+}
+
+export type MailerDecoratorType = {
+  new (
+    ...args: any[]
+  ): {
+    send: <T>(...args: any[]) => Promise<T> | T;
+  };
+};
+
+export interface IMailer {
+  send: <T>(...args: any[]) => Promise<T> | T;
+}
+
+export type MiddlewareDecoratorType = {
+  new (
+    ...args: any[]
+  ): {
+    next: <T>(...args: any[]) => Promise<T> | T;
+  };
+};
+
+export interface IMiddleware {
+  next: <T>(...args: any[]) => Promise<T> | T;
+}

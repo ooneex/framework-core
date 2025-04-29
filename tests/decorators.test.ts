@@ -1,5 +1,3 @@
-// noinspection t
-
 import { describe, expect, it } from 'bun:test';
 import {
   type ContextType,
@@ -7,7 +5,11 @@ import {
   HttpResponse,
   type IResponse,
   Route,
+  config,
+  container,
+  inject,
   router,
+  service,
 } from '@';
 import { CookieMap, type RouterTypes } from 'bun';
 
@@ -175,6 +177,7 @@ describe('Controller decorator', () => {
     expect(route?.path).toEqual('/posts');
     expect(route?.name).toEqual('head_posts');
   });
+
   it('should generate a random UUID when name is not provided', () => {
     @Route.get('/random-path')
     class Controller {
@@ -372,5 +375,50 @@ describe('Controller decorator', () => {
       expect(responseBody.success).toBe(false);
       expect(responseBody.status).toBe(400);
     });
+  });
+
+  it('Controller dependencies injection', () => {
+    @config()
+    class PostConfig {
+      public get<T>(): T {
+        return 'test' as T;
+      }
+    }
+
+    @service()
+    class PostService {
+      constructor(
+        @inject(PostConfig)
+        public readonly config: PostConfig,
+      ) {}
+
+      public execute<T>(): T {
+        return 'post created' as T;
+      }
+
+      public getEnv(): string {
+        return this.config.get();
+      }
+    }
+
+    @Route.get('/posts')
+    class PostController {
+      constructor(
+        @inject(PostService)
+        public readonly postService: PostService,
+      ) {}
+
+      public async action({ response }: ContextType): Promise<IResponse> {
+        return response.json({
+          message: this.postService.execute(),
+          env: this.postService.getEnv(),
+        });
+      }
+    }
+
+    const controller = container.get(PostController);
+    expect(controller).toBeInstanceOf(PostController);
+    expect(controller.postService).toBeInstanceOf(PostService);
+    expect(controller.postService.config).toBeInstanceOf(PostConfig);
   });
 });
