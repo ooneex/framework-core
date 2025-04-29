@@ -1,3 +1,4 @@
+import { container } from './container.ts';
 import { RouterException } from './exception/RouterException';
 import type { RouteConfigType } from './types';
 
@@ -18,6 +19,8 @@ export class Router {
     const routes = this.routes.get(route.path) ?? [];
     routes.push(route);
     this.routes.set(route.path, routes);
+
+    container.bind(route.controller).toSelf().inSingletonScope();
 
     return this;
   }

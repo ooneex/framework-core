@@ -1,5 +1,5 @@
 import { describe, expect, it } from 'bun:test';
-import { type ContextType, Router, RouterException } from '@';
+import { type ContextType, Router, RouterException, container } from '@';
 
 describe('Router', () => {
   class TestController {
@@ -193,5 +193,31 @@ describe('Router', () => {
       expect(route).not.toBeNull();
       expect(route?.name).toBe(`test_${method.toLowerCase()}`);
     }
+  });
+
+  it('should verify method chaining functionality for addRoute', () => {
+    class PostController {
+      public action({ response }: ContextType) {
+        return response.json({ message: 'Hello, World!' });
+      }
+    }
+
+    const router = new Router();
+
+    router.addRoute({
+      name: 'add_user',
+      path: '/users',
+      method: 'POST',
+      controller: PostController,
+    });
+
+    const route = router.findRouteByName('add_user');
+    expect(route).toBeDefined();
+
+    if (!route) {
+      throw new Error('Route not found');
+    }
+
+    expect(container.get(route.controller)).toBeInstanceOf(PostController);
   });
 });
