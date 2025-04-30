@@ -6,12 +6,14 @@ import {
   HttpRequest,
   HttpResponse,
   type IResponse,
+  MailerDecoratorException,
   Route,
   ServiceDecoratorException,
   config,
   container,
   database,
   inject,
+  mailer,
   router,
   service,
 } from '@';
@@ -428,24 +430,20 @@ describe('Decorator', () => {
 
   describe('service decorator', () => {
     it('should throw error if class name does not end with Service', () => {
-      expect(() => {
+      const callback = () => {
         @service()
-        class _InvalidClass {
+        // biome-ignore lint/correctness/noUnusedVariables: <explanation>
+        class InvalidClass {
           public execute<T>(): T {
             return 'execute' as T;
           }
         }
-      }).toThrow(ServiceDecoratorException);
+      };
 
-      expect(() => {
-        @service()
-        class _InvalidClass {
-          public execute<T>(): T {
-            return 'execute' as T;
-          }
-        }
-      }).toThrow(
-        'Service decorator can only be used on service classes. _InvalidClass must end with Service keyword.',
+      expect(callback).toThrow(ServiceDecoratorException);
+
+      expect(callback).toThrow(
+        'Service decorator can only be used on service classes. InvalidClass must end with Service keyword.',
       );
     });
 
@@ -529,7 +527,7 @@ describe('Decorator', () => {
     });
 
     it('should throw error when decorator is used on invalid class', () => {
-      expect(() => {
+      const callback = () => {
         @config()
         // biome-ignore lint/correctness/noUnusedVariables: trust me
         class InvalidClass {
@@ -537,7 +535,12 @@ describe('Decorator', () => {
             return { value: 'test' } as T;
           }
         }
-      }).toThrow(ConfigDecoratorException);
+      };
+
+      expect(callback).toThrow(
+        'Config decorator can only be used on config classes. InvalidClass must end with Config keyword.',
+      );
+      expect(callback).toThrow(ConfigDecoratorException);
     });
 
     it('should properly inject dependencies in config classes', () => {
@@ -636,7 +639,7 @@ describe('Decorator', () => {
     });
 
     it('should throw error when decorator is used on invalid class', () => {
-      expect(() => {
+      const callback = () => {
         @database()
         // biome-ignore lint/correctness/noUnusedVariables: trust me
         class InvalidClass {
@@ -648,7 +651,12 @@ describe('Decorator', () => {
             return 'close' as T;
           }
         }
-      }).toThrow(DatabaseDecoratorException);
+      };
+
+      expect(callback).toThrow(
+        'Database decorator can only be used on database classes. InvalidClass must end with Database keyword.',
+      );
+      expect(callback).toThrow(DatabaseDecoratorException);
     });
 
     it('should properly inject dependencies in database classes', () => {
@@ -685,6 +693,105 @@ describe('Decorator', () => {
       expect(instance).toBeInstanceOf(InjectedDatabase);
       expect(instance.dependency).toBeDefined();
       expect(instance.dependency).toBeInstanceOf(DependencyDatabase);
+    });
+  });
+
+  describe('Mailer Decorator', () => {
+    it('should register a valid mailer class in the container', () => {
+      @mailer()
+      class TestMailer {
+        public send<T>(): T {
+          return 'sent' as T;
+        }
+      }
+
+      const instance = container.get<TestMailer>(TestMailer);
+      expect(instance).toBeDefined();
+      expect(instance).toBeInstanceOf(TestMailer);
+      expect(instance.send<string>()).toBe('sent');
+    });
+
+    it('should register mailer class with transient scope', () => {
+      @mailer('transient')
+      class TransientScopedMailer {
+        public send<T>(): T {
+          return 'sent' as T;
+        }
+      }
+
+      const instance1 = container.get<TransientScopedMailer>(
+        TransientScopedMailer,
+      );
+      const instance2 = container.get<TransientScopedMailer>(
+        TransientScopedMailer,
+      );
+      expect(instance1).toBeDefined();
+      expect(instance2).toBeDefined();
+      expect(instance1).not.toBe(instance2);
+    });
+
+    it('should register mailer class with singleton scope by default', () => {
+      @mailer()
+      class SingletonScopedMailer {
+        public send<T>(): T {
+          return 'sent' as T;
+        }
+      }
+
+      const instance1 = container.get<SingletonScopedMailer>(
+        SingletonScopedMailer,
+      );
+      const instance2 = container.get<SingletonScopedMailer>(
+        SingletonScopedMailer,
+      );
+      expect(instance1).toBeDefined();
+      expect(instance2).toBeDefined();
+      expect(instance1).toBe(instance2);
+    });
+
+    it('should throw error when decorator is used on invalid class', () => {
+      const callback = () => {
+        @mailer()
+        // biome-ignore lint/correctness/noUnusedVariables: trust me
+        class InvalidClass {
+          public send<T>(): T {
+            return 'sent' as T;
+          }
+        }
+      };
+
+      expect(callback).toThrow(
+        'Mailer decorator can only be used on mailer classes. InvalidClass must end with Mailer keyword.',
+      );
+      expect(callback).toThrow(MailerDecoratorException);
+    });
+
+    it('should properly inject dependencies in mailer classes', () => {
+      @mailer()
+      class DependencyMailer {
+        public send<T>(): T {
+          return 'sent' as T;
+        }
+      }
+
+      @mailer()
+      class InjectedMailer {
+        constructor(
+          @inject(DependencyMailer)
+          public dependency: DependencyMailer,
+        ) {}
+
+        public send<T>(): T {
+          return 'sent' as T;
+        }
+      }
+
+      const instance = container.get<InjectedMailer>(InjectedMailer);
+
+      expect(instance).toBeDefined();
+      expect(instance).toBeInstanceOf(InjectedMailer);
+      expect(instance.dependency).toBeDefined();
+      expect(instance.dependency).toBeInstanceOf(DependencyMailer);
     });
   });
 });

@@ -3,12 +3,14 @@ import { container } from './container';
 import { ContainerScope } from './enums';
 import { ConfigDecoratorException } from './exception/ConfigDecoratorException';
 import { DatabaseDecoratorException } from './exception/DatabaseDecoratorException';
+import { MailerDecoratorException } from './exception/MailerDecoratorException';
 import { ServiceDecoratorException } from './exception/ServiceDecoratorException';
 import type {
   ConfigDecoratorType,
   ContainerScopeType,
   ControllerDecoratorType,
   DatabaseDecoratorType,
+  MailerDecoratorType,
   RouteConfigType,
   ServiceDecoratorType,
 } from './types';
@@ -115,7 +117,11 @@ export const Route = {
 };
 
 const registerWithScope = (
-  target: ConfigDecoratorType | ServiceDecoratorType | DatabaseDecoratorType,
+  target:
+    | ConfigDecoratorType
+    | ServiceDecoratorType
+    | DatabaseDecoratorType
+    | MailerDecoratorType,
   scope: ContainerScopeType = ContainerScope.Singleton,
 ) => {
   const binding = container.bind(target).toSelf();
@@ -177,5 +183,21 @@ export const database = (
     }
 
     registerWithScope(database, scope);
+  };
+};
+
+export const mailer = (
+  scope: ContainerScopeType = ContainerScope.Singleton,
+) => {
+  return (mailer: MailerDecoratorType) => {
+    const name = mailer.prototype.constructor.name;
+
+    if (!name.endsWith('Mailer')) {
+      throw new MailerDecoratorException(
+        `Mailer decorator can only be used on mailer classes. ${name} must end with Mailer keyword.`,
+      );
+    }
+
+    registerWithScope(mailer, scope);
   };
 };
