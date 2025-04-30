@@ -1,6 +1,7 @@
 import { router } from './Router';
 import { container } from './container';
 import { ContainerScope } from './enums';
+import { ConfigDecoratorException } from './exception/ConfigDecoratorException';
 import { ServiceDecoratorException } from './exception/ServiceDecoratorException';
 import type {
   ConfigDecoratorType,
@@ -133,6 +134,14 @@ export const config = (
   scope: ContainerScopeType = ContainerScope.Singleton,
 ) => {
   return (config: ConfigDecoratorType) => {
+    const name = config.prototype.constructor.name;
+
+    if (!name.endsWith('Config')) {
+      throw new ConfigDecoratorException(
+        `Config decorator can only be used on config classes. ${name} must end with Config keyword.`,
+      );
+    }
+
     registerWithScope(config, scope);
   };
 };
