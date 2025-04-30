@@ -1,15 +1,15 @@
 import { describe, expect, it } from 'bun:test';
-import { ServiceDecoratorException } from '@';
+import { DatabaseDecoratorException } from '@';
 import { STATUS_CODE } from '@';
 
-describe('ServiceDecoratorException', () => {
-  it('should create ServiceDecoratorException with string message', () => {
+describe('DatabaseDecoratorException', () => {
+  it('should create DatabaseDecoratorException with string message', () => {
     const errorMessage = 'Test error message';
 
     try {
-      throw new ServiceDecoratorException(errorMessage);
+      throw new DatabaseDecoratorException(errorMessage);
     } catch (exception: any) {
-      expect(exception).toBeInstanceOf(ServiceDecoratorException);
+      expect(exception).toBeInstanceOf(DatabaseDecoratorException);
       expect(exception.message).toBe(errorMessage);
       expect(exception.status).toBe(STATUS_CODE.InternalServerError);
       expect(exception.data).toBeNull();
@@ -17,25 +17,25 @@ describe('ServiceDecoratorException', () => {
     }
   });
 
-  it('should create ServiceDecoratorException with additional data', () => {
+  it('should create DatabaseDecoratorException with additional data', () => {
     const errorMessage = 'Test error message';
     const data = { key: 'value' };
 
     try {
-      throw new ServiceDecoratorException(errorMessage, data);
+      throw new DatabaseDecoratorException(errorMessage, data);
     } catch (exception: any) {
       expect(exception.data).toEqual(data);
     }
   });
 
-  it('should throw ServiceDecoratorException', () => {
+  it('should throw DatabaseDecoratorException', () => {
     const errorMessage = 'Test error message';
 
     const throwableFunction = () => {
-      throw new ServiceDecoratorException(errorMessage);
+      throw new DatabaseDecoratorException(errorMessage);
     };
 
-    expect(throwableFunction).toThrow(ServiceDecoratorException);
+    expect(throwableFunction).toThrow(DatabaseDecoratorException);
     expect(throwableFunction).toThrow(errorMessage);
   });
 });
