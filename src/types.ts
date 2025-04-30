@@ -45,9 +45,11 @@ export type RouteConfigType = {
   name: string;
   path: `/${string}`;
   method: MethodType;
-  validators?: string[];
-  middlewares?: string[];
-  controller: ControllerDecoratorType;
+  // TODO: Add unit tests
+  validators?: Record<ValidationScopeType, ValidatorType[]>;
+  // TODO: Add unit tests
+  middlewares?: Record<MiddlewareScopeType, MiddlewareType[]>;
+  controller: ControllerType;
 };
 
 export type StatusCodeType = (typeof STATUS_CODE)[keyof typeof STATUS_CODE];
@@ -72,6 +74,13 @@ export type ContextType = {
   bearerToken: string | null;
   envVars: Record<string, ScalarType>;
 };
+
+export type ValidationScopeType =
+  | 'params'
+  | 'payload'
+  | 'queries'
+  | 'env'
+  | 'response';
 
 export interface IUrl {
   readonly protocol: string;
@@ -199,7 +208,7 @@ export interface IStorage {
   getAsStream(key: string): ReadableStream;
 }
 
-export type ControllerDecoratorType = {
+export type ControllerType = {
   new (
     ...args: any[]
   ): {
@@ -207,11 +216,7 @@ export type ControllerDecoratorType = {
   };
 };
 
-export interface IController {
-  action: (context: ContextType) => Promise<IResponse> | IResponse;
-}
-
-export type ConfigDecoratorType = {
+export type ConfigType = {
   new (
     ...args: any[]
   ): {
@@ -219,11 +224,7 @@ export type ConfigDecoratorType = {
   };
 };
 
-export interface IConfig {
-  get: <T>(...args: any[]) => Promise<T> | T;
-}
-
-export type ServiceDecoratorType = {
+export type ServiceType = {
   new (
     ...args: any[]
   ): {
@@ -231,11 +232,7 @@ export type ServiceDecoratorType = {
   };
 };
 
-export interface IService {
-  execute: <T>(...args: any[]) => Promise<T> | T;
-}
-
-export type DatabaseDecoratorType = {
+export type DatabaseType = {
   new (
     ...args: any[]
   ): {
@@ -244,12 +241,7 @@ export type DatabaseDecoratorType = {
   };
 };
 
-export interface IDatabase {
-  open: <T>(...args: any[]) => Promise<T> | T;
-  close: <T>(...args: any[]) => Promise<T> | T;
-}
-
-export type MailerDecoratorType = {
+export type MailerType = {
   new (
     ...args: any[]
   ): {
@@ -257,18 +249,18 @@ export type MailerDecoratorType = {
   };
 };
 
-export interface IMailer {
-  send: <T>(...args: any[]) => Promise<T> | T;
-}
-
-export type MiddlewareDecoratorType = {
+export type MiddlewareType = {
   new (
     ...args: any[]
   ): {
-    next: <T>(...args: any[]) => Promise<T> | T;
+    next: (context: ContextType) => Promise<ContextType> | ContextType;
   };
 };
 
-export interface IMiddleware {
-  next: <T>(...args: any[]) => Promise<T> | T;
-}
+export type ValidatorType = {
+  new (
+    ...args: any[]
+  ): {
+    beforeValidation?: <T>(data: any) => Promise<T> | T;
+  };
+};
