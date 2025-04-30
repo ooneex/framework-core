@@ -49,6 +49,8 @@ export type RouteConfigType = {
   validators?: Record<ValidationScopeType, ValidatorType[]>;
   // TODO: Add unit tests
   middlewares?: Record<MiddlewareScopeType, MiddlewareType[]>;
+  // TODO: Add unit tests
+  roles?: RoleType[];
   controller: ControllerType;
 };
 
@@ -71,8 +73,8 @@ export type ContextType = {
   header: IReadonlyHeader;
   ip: string;
   host: string;
-  bearerToken: string | null;
-  envVars: Record<string, ScalarType>;
+  // TODO: Add unit tests
+  user?: UserType;
 };
 
 export type ValidationScopeType =
@@ -212,7 +214,7 @@ export type ControllerType = {
   new (
     ...args: any[]
   ): {
-    action: (context: ContextType) => Promise<IResponse> | IResponse;
+    action: (context: Readonly<ContextType>) => Promise<IResponse> | IResponse;
   };
 };
 
@@ -269,6 +271,16 @@ export type RoleType = {
   new (
     ...args: any[]
   ): {
+    getRoles: () => Promise<string[]> | string[];
+  };
+};
+
+export type UserType = {
+  new (
+    ...args: any[]
+  ): {
+    getId: <T extends string | number>() => Promise<T> | T;
+    getUsername: () => Promise<string> | string;
     getRoles: () => Promise<string[]> | string[];
   };
 };
