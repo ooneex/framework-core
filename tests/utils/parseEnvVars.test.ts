@@ -1,5 +1,5 @@
 import { describe, expect, it } from 'bun:test';
-import { parseEnvVars } from '@';
+import { container, parseEnvVars } from '@';
 
 describe('Environment Variables', () => {
   it('parseEnvVars', () => {
@@ -7,8 +7,10 @@ describe('Environment Variables', () => {
     Bun.env.DB_URL = 'sqlite://';
 
     const vars = parseEnvVars<{ port: number; dbUrl: string }>();
-
     expect(vars.port).toBe(9000);
     expect(vars.dbUrl).toBe('sqlite://');
+
+    expect(container.get<number>('env.port')).toBe(9000);
+    expect(container.get<string>('env.dbUrl')).toBe('sqlite://');
   });
 });
