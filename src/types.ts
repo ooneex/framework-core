@@ -264,3 +264,11 @@ export type ValidatorType = {
     beforeValidation?: <T>(data: any) => Promise<T> | T;
   };
 };
+
+export type RoleType = {
+  new (
+    ...args: any[]
+  ): {
+    getRoles: () => Promise<string[]> | string[];
+  };
+};
