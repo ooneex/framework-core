@@ -4,15 +4,21 @@ import { ContainerScope } from './enums';
 import { ConfigDecoratorException } from './exception/ConfigDecoratorException';
 import { DatabaseDecoratorException } from './exception/DatabaseDecoratorException';
 import { MailerDecoratorException } from './exception/MailerDecoratorException';
+import { MiddlewareDecoratorException } from './exception/MiddlewareDecoratorException';
+import { RoleDecoratorException } from './exception/RoleDecoratorException';
 import { ServiceDecoratorException } from './exception/ServiceDecoratorException';
+import { ValidatorDecoratorException } from './exception/ValidatorDecoratorException';
 import type {
-  ConfigDecoratorType,
+  ConfigType,
   ContainerScopeType,
-  ControllerDecoratorType,
-  DatabaseDecoratorType,
-  MailerDecoratorType,
+  ControllerType,
+  DatabaseType,
+  MailerType,
+  MiddlewareType,
+  RoleType,
   RouteConfigType,
-  ServiceDecoratorType,
+  ServiceType,
+  ValidatorType,
 } from './types';
 
 export const Route = {
@@ -20,7 +26,7 @@ export const Route = {
     path: `/${string}`,
     config?: Omit<RouteConfigType, 'path' | 'method' | 'controller'>,
   ) => {
-    return (construct: ControllerDecoratorType) => {
+    return (construct: ControllerType) => {
       router.addRoute({
         path,
         method: 'GET',
@@ -34,7 +40,7 @@ export const Route = {
     path: `/${string}`,
     config?: Omit<RouteConfigType, 'path' | 'method' | 'controller'>,
   ) => {
-    return (construct: ControllerDecoratorType) => {
+    return (construct: ControllerType) => {
       router.addRoute({
         path,
         method: 'POST',
@@ -48,7 +54,7 @@ export const Route = {
     path: `/${string}`,
     config?: Omit<RouteConfigType, 'path' | 'method' | 'controller'>,
   ) => {
-    return (construct: ControllerDecoratorType) => {
+    return (construct: ControllerType) => {
       router.addRoute({
         path,
         method: 'PUT',
@@ -62,7 +68,7 @@ export const Route = {
     path: `/${string}`,
     config?: Omit<RouteConfigType, 'path' | 'method' | 'controller'>,
   ) => {
-    return (construct: ControllerDecoratorType) => {
+    return (construct: ControllerType) => {
       router.addRoute({
         path,
         method: 'DELETE',
@@ -76,7 +82,7 @@ export const Route = {
     path: `/${string}`,
     config?: Omit<RouteConfigType, 'path' | 'method' | 'controller'>,
   ) => {
-    return (construct: ControllerDecoratorType) => {
+    return (construct: ControllerType) => {
       router.addRoute({
         path,
         method: 'PATCH',
@@ -90,7 +96,7 @@ export const Route = {
     path: `/${string}`,
     config?: Omit<RouteConfigType, 'path' | 'method' | 'controller'>,
   ) => {
-    return (construct: ControllerDecoratorType) => {
+    return (construct: ControllerType) => {
       router.addRoute({
         path,
         method: 'OPTIONS',
@@ -104,7 +110,7 @@ export const Route = {
     path: `/${string}`,
     config?: Omit<RouteConfigType, 'path' | 'method' | 'controller'>,
   ) => {
-    return (construct: ControllerDecoratorType) => {
+    return (construct: ControllerType) => {
       router.addRoute({
         path,
         method: 'HEAD',
@@ -118,10 +124,13 @@ export const Route = {
 
 const registerWithScope = (
   target:
-    | ConfigDecoratorType
-    | ServiceDecoratorType
-    | DatabaseDecoratorType
-    | MailerDecoratorType,
+    | ConfigType
+    | ServiceType
+    | DatabaseType
+    | MailerType
+    | MiddlewareType
+    | ValidatorType
+    | RoleType,
   scope: ContainerScopeType = ContainerScope.Singleton,
 ) => {
   const binding = container.bind(target).toSelf();
@@ -141,7 +150,7 @@ const registerWithScope = (
 export const config = (
   scope: ContainerScopeType = ContainerScope.Singleton,
 ) => {
-  return (config: ConfigDecoratorType) => {
+  return (config: ConfigType) => {
     const name = config.prototype.constructor.name;
 
     if (!name.endsWith('Config')) {
@@ -157,7 +166,7 @@ export const config = (
 export const service = (
   scope: ContainerScopeType = ContainerScope.Singleton,
 ) => {
-  return (service: ServiceDecoratorType) => {
+  return (service: ServiceType) => {
     const name = service.prototype.constructor.name;
 
     if (!name.endsWith('Service')) {
@@ -173,7 +182,7 @@ export const service = (
 export const database = (
   scope: ContainerScopeType = ContainerScope.Singleton,
 ) => {
-  return (database: DatabaseDecoratorType) => {
+  return (database: DatabaseType) => {
     const name = database.prototype.constructor.name;
 
     if (!name.endsWith('Database')) {
@@ -189,7 +198,7 @@ export const database = (
 export const mailer = (
   scope: ContainerScopeType = ContainerScope.Singleton,
 ) => {
-  return (mailer: MailerDecoratorType) => {
+  return (mailer: MailerType) => {
     const name = mailer.prototype.constructor.name;
 
     if (!name.endsWith('Mailer')) {
@@ -199,5 +208,54 @@ export const mailer = (
     }
 
     registerWithScope(mailer, scope);
+  };
+};
+
+// TODO: Unit tests
+export const middleware = (
+  scope: ContainerScopeType = ContainerScope.Singleton,
+) => {
+  return (middleware: MiddlewareType) => {
+    const name = middleware.prototype.constructor.name;
+
+    if (!name.endsWith('Middleware')) {
+      throw new MiddlewareDecoratorException(
+        `Middleware decorator can only be used on middleware classes. ${name} must end with Middleware keyword.`,
+      );
+    }
+
+    registerWithScope(middleware, scope);
+  };
+};
+
+// TODO: Unit tests
+export const validator = (
+  scope: ContainerScopeType = ContainerScope.Singleton,
+) => {
+  return (validator: ValidatorType) => {
+    const name = validator.prototype.constructor.name;
+
+    if (!name.endsWith('Validator')) {
+      throw new ValidatorDecoratorException(
+        `Validator decorator can only be used on validator classes. ${name} must end with Validator keyword.`,
+      );
+    }
+
+    registerWithScope(validator, scope);
+  };
+};
+
+// TODO: Unit tests
+export const role = (scope: ContainerScopeType = ContainerScope.Singleton) => {
+  return (role: RoleType) => {
+    const name = role.prototype.constructor.name;
+
+    if (!name.endsWith('Role')) {
+      throw new RoleDecoratorException(
+        `Role decorator can only be used on role classes. ${name} must end with Role keyword.`,
+      );
+    }
+
+    registerWithScope(role, scope);
   };
 };

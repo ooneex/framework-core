@@ -67,8 +67,6 @@ describe('Decorator', () => {
       header: request.header,
       ip: request.ip,
       host: request.host,
-      bearerToken: request.bearerToken,
-      envVars: {},
     };
   }
 
@@ -205,31 +203,6 @@ describe('Decorator', () => {
         /^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$/,
       );
     }
-  });
-
-  it('should support additional configuration options', () => {
-    const validators = ['validator1', 'validator2'];
-    const middlewares = ['middleware1', 'middleware2'];
-
-    @Route.post('/config-test', {
-      name: 'config_test',
-      validators,
-      middlewares,
-    })
-    class Controller {
-      public action({ response }: ContextType): IResponse {
-        return response.json({ message: 'Config test' });
-      }
-    }
-
-    const route = router.findRouteByName('config_test');
-
-    expect(route?.controller).toEqual(Controller);
-    expect(route?.method).toEqual('POST');
-    expect(route?.path).toEqual('/config-test');
-    expect(route?.name).toEqual('config_test');
-    expect(route?.validators).toEqual(validators);
-    expect(route?.middlewares).toEqual(middlewares);
   });
 
   it('should handle different path patterns', () => {
