@@ -2,11 +2,13 @@ import { router } from './Router';
 import { container } from './container';
 import { ContainerScope } from './enums';
 import { ConfigDecoratorException } from './exception/ConfigDecoratorException';
+import { DatabaseDecoratorException } from './exception/DatabaseDecoratorException';
 import { ServiceDecoratorException } from './exception/ServiceDecoratorException';
 import type {
   ConfigDecoratorType,
   ContainerScopeType,
   ControllerDecoratorType,
+  DatabaseDecoratorType,
   RouteConfigType,
   ServiceDecoratorType,
 } from './types';
@@ -113,7 +115,7 @@ export const Route = {
 };
 
 const registerWithScope = (
-  target: ConfigDecoratorType | ServiceDecoratorType,
+  target: ConfigDecoratorType | ServiceDecoratorType | DatabaseDecoratorType,
   scope: ContainerScopeType = ContainerScope.Singleton,
 ) => {
   const binding = container.bind(target).toSelf();
@@ -159,5 +161,21 @@ export const service = (
     }
 
     registerWithScope(service, scope);
+  };
+};
+
+export const database = (
+  scope: ContainerScopeType = ContainerScope.Singleton,
+) => {
+  return (database: DatabaseDecoratorType) => {
+    const name = database.prototype.constructor.name;
+
+    if (!name.endsWith('Database')) {
+      throw new DatabaseDecoratorException(
+        `Database decorator can only be used on database classes. ${name} must end with Database keyword.`,
+      );
+    }
+
+    registerWithScope(database, scope);
   };
 };
