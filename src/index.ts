@@ -13,6 +13,7 @@ export { RouterException } from './exception/RouterException';
 export { ConfigDecoratorException } from './exception/ConfigDecoratorException';
 export { ServiceDecoratorException } from './exception/ServiceDecoratorException';
 export { DatabaseDecoratorException } from './exception/DatabaseDecoratorException';
+export { MailerDecoratorException } from './exception/MailerDecoratorException';
 export { Header } from './header/Header';
 export { HeaderChecker } from './header/HeaderChecker';
 export { ReadonlyHeader } from './header/ReadonlyHeader';
