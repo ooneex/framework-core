@@ -21,7 +21,7 @@
   "bugs": {
     "url": "https://github.com/ooneex/packages/issues"
   },
-  "keywords": ["bun", "framework", "api", "rest"],
+  "keywords": ["bun", "framework", "api", "rest", "typescript", "ooneex"],
   "devDependencies": {
     "@biomejs/biome": "^1.9.4",
     "@types/accept-language-parser": "^1.5.7",
