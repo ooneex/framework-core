@@ -10,6 +10,7 @@ import {
   inject,
   router,
   service,
+  validator,
 } from '@';
 import { CookieMap, type RouterTypes } from 'bun';
 
@@ -393,5 +394,40 @@ describe('Route Decorator', () => {
     expect(controller).toBeInstanceOf(PostController);
     expect(controller.postService).toBeInstanceOf(PostService);
     expect(controller.postService.config).toBeInstanceOf(PostConfig);
+  });
+
+  it('should have route validators', () => {
+    @validator()
+    class CreatePostValidator {
+      name: string;
+
+      public beforeValidation(data: any): any {
+        return data;
+      }
+    }
+
+    @Route.post('/posts', {
+      name: 'create-post',
+      validators: { payload: [CreatePostValidator] },
+    })
+    class PostController {
+      public async action({ response }: ContextType): Promise<IResponse> {
+        return response.json({
+          message: 'ok',
+        });
+      }
+    }
+
+    const controller = container.get(PostController);
+    expect(controller).toBeInstanceOf(PostController);
+
+    const route = router.findRouteByName('create-post');
+    expect(route).toBeDefined();
+    expect(route?.validators).toBeDefined();
+    expect(route?.validators?.payload).toBeArrayOfSize(1);
+    expect(route?.validators?.payload?.[0]).toEqual(CreatePostValidator);
+
+    const postValidator = container.get(CreatePostValidator);
+    expect(postValidator).toBeInstanceOf(CreatePostValidator);
   });
 });

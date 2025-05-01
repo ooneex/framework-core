@@ -42,13 +42,12 @@ export type MimeType = (typeof MIME_TYPES)[number];
 export type HeaderFieldType = (typeof HEADERS)[number] | `X-Custom-${string}`;
 
 export type RouteConfigType = {
-  name: string;
+  name?: string;
   path: `/${string}`;
   method: MethodType;
+  validators?: Partial<Record<ValidationScopeType, ValidatorType[]>>;
   // TODO: Add unit tests
-  validators?: Record<ValidationScopeType, ValidatorType[]>;
-  // TODO: Add unit tests
-  middlewares?: Record<MiddlewareScopeType, MiddlewareType[]>;
+  middlewares?: Partial<Record<MiddlewareScopeType, MiddlewareType[]>>;
   // TODO: Add unit tests
   roles?: RoleType[];
   controller: ControllerType;
@@ -263,7 +262,7 @@ export type ValidatorType = {
   new (
     ...args: any[]
   ): {
-    beforeValidation?: (data: any) => Promise<any> | any;
+    beforeValidation?: <T = any>(data: T) => Promise<any> | any;
   };
 };
 

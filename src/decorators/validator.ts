@@ -3,7 +3,6 @@ import { ValidatorDecoratorException } from '../exceptions/ValidatorDecoratorExc
 import type { ContainerScopeType, ValidatorType } from '../types';
 import { registerWithScope } from './registerWithScope';
 
-// TODO: Unit tests
 export const validator = (
   scope: ContainerScopeType = EContainerScope.Singleton,
 ) => {

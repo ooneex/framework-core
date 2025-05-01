@@ -3,7 +3,6 @@ import { RoleDecoratorException } from '../exceptions/RoleDecoratorException';
 import type { ContainerScopeType, RoleType } from '../types';
 import { registerWithScope } from './registerWithScope';
 
-// TODO: Unit tests
 export const role = (scope: ContainerScopeType = EContainerScope.Singleton) => {
   return (role: RoleType) => {
     const name = role.prototype.constructor.name;
