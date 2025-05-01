@@ -1,7 +1,15 @@
 export * from './types';
 export * from './status';
 export * from './locales';
-export * from './decorators';
+
+export { config } from './decorators/config';
+export { database } from './decorators/database';
+export { mailer } from './decorators/mailer';
+export { middleware } from './decorators/middleware';
+export { role } from './decorators/role';
+export { service } from './decorators/service';
+export { validator } from './decorators/validator';
+export { Route } from './decorators/route';
 
 export { App } from './App';
 export { Env } from './enums';
@@ -30,4 +38,4 @@ export { toCamelCase } from './utils/toCamelCase';
 export { trim } from './utils/trim';
 export { capitalizeWord } from './utils/capitalizeWord';
 export { splitToWords } from './utils/splitToWords';
-export { container, inject } from './container';
+export { container, inject, injectable } from './container';

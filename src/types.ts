@@ -1,6 +1,6 @@
 import type { BunRequest, CookieMap } from 'bun';
 import type { BunFile, S3File, S3Options } from 'bun';
-import type { ContainerScope, EMiddlewareScope, EScope, Env } from './enums';
+import type { EContainerScope, EMiddlewareScope, EScope, Env } from './enums';
 import type { Exception } from './exceptions/Exception';
 import type { HEADERS } from './headers';
 import type { LOCALES } from './locales';
@@ -12,7 +12,7 @@ export type ScalarType = boolean | number | bigint | string;
 export type EnvType = `${Env}`;
 export type ScopeType = `${EScope}`;
 export type MiddlewareScopeType = `${EMiddlewareScope}`;
-export type ContainerScopeType = `${ContainerScope}`;
+export type ContainerScopeType = `${EContainerScope}`;
 
 export type MethodType =
   | 'GET'

@@ -18,7 +18,7 @@ export enum EMiddlewareScope {
   Response = 'response',
 }
 
-export enum ContainerScope {
+export enum EContainerScope {
   Singleton = 'singleton',
   Transient = 'transient',
   Request = 'request',
