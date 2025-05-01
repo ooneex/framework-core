@@ -3,7 +3,6 @@ import { MiddlewareDecoratorException } from '../exceptions/MiddlewareDecoratorE
 import type { ContainerScopeType, MiddlewareType } from '../types';
 import { registerWithScope } from './registerWithScope';
 
-// TODO: Unit tests
 export const middleware = (
   scope: ContainerScopeType = EContainerScope.Singleton,
 ) => {
