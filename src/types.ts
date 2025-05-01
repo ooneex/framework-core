@@ -263,7 +263,7 @@ export type ValidatorType = {
   new (
     ...args: any[]
   ): {
-    beforeValidation?: <T>(data: any) => Promise<T> | T;
+    beforeValidation?: (data: any) => Promise<any> | any;
   };
 };
 
