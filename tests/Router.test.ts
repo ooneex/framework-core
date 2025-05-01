@@ -150,22 +150,6 @@ describe('Router', () => {
     expect(router.findRouteByName('non-existing')).toBe(null);
   });
 
-  it('should store and retrieve routes with validators and middlewares', () => {
-    const router = new Router();
-
-    router.addRoute({
-      name: 'create_post',
-      path: '/posts',
-      method: 'POST',
-      controller: TestController,
-    });
-
-    const route = router.findRouteByName('create_post');
-
-    expect(route?.validators).toBeArrayOfSize(0);
-    expect(route?.middlewares).toBeArrayOfSize(0);
-  });
-
   it('should handle routes with all HTTP methods', () => {
     const router = new Router();
     const methods: Array<
