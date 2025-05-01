@@ -1,21 +1,34 @@
 import type { BunRequest, Server } from 'bun';
 import { HttpRequest } from './HttpRequest';
 import { HttpResponse } from './HttpResponse';
-import type { ContextType } from './types';
-import { parseEnvVars } from './utils/parseEnvVars';
+import type {
+  ContextType,
+  MiddlewareScopeType,
+  MiddlewareType,
+  ValidationScopeType,
+  ValidatorType,
+} from './types';
 
 export class App {
   public readonly port: number;
   public readonly hostname: string;
+  public readonly isDevelopment: boolean;
+  public readonly validators?: Record<ValidationScopeType, ValidatorType[]>;
+  public readonly middlewares?: Record<MiddlewareScopeType, MiddlewareType[]>;
 
   // validate envVars
   constructor(config?: {
     port?: number;
     hostname?: string;
-    validators?: string[];
+    validators?: Record<ValidationScopeType, ValidatorType[]>;
+    middlewares?: Record<MiddlewareScopeType, MiddlewareType[]>;
+    isDevelopment?: boolean;
   }) {
     this.port = config?.port ?? 80;
     this.hostname = config?.hostname ?? '0.0.0.0';
+    this.validators = config?.validators;
+    this.middlewares = config?.middlewares;
+    this.isDevelopment = config?.isDevelopment ?? false;
   }
 
   async start() {
@@ -67,7 +80,5 @@ const handler = async (config: {
     header: request.header,
     ip: request.ip,
     host: request.host,
-    bearerToken: request.bearerToken,
-    envVars: parseEnvVars(),
   };
 };
