@@ -1,5 +1,5 @@
 import { container } from './container.ts';
-import { RouterException } from './exception/RouterException';
+import { RouterException } from './exceptions/RouterException.ts';
 import type { RouteConfigType } from './types';
 
 export class Router {

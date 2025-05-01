@@ -1,7 +1,7 @@
 import type { BunRequest, CookieMap } from 'bun';
 import type { BunFile, S3File, S3Options } from 'bun';
 import type { ContainerScope, EMiddlewareScope, EScope, Env } from './enums';
-import type { Exception } from './exception/Exception';
+import type { Exception } from './exceptions/Exception';
 import type { HEADERS } from './headers';
 import type { LOCALES } from './locales';
 import type { MIME_TYPES } from './mimes';

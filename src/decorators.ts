@@ -1,13 +1,13 @@
 import { router } from './Router';
 import { container } from './container';
 import { ContainerScope } from './enums';
-import { ConfigDecoratorException } from './exception/ConfigDecoratorException';
-import { DatabaseDecoratorException } from './exception/DatabaseDecoratorException';
-import { MailerDecoratorException } from './exception/MailerDecoratorException';
-import { MiddlewareDecoratorException } from './exception/MiddlewareDecoratorException';
-import { RoleDecoratorException } from './exception/RoleDecoratorException';
-import { ServiceDecoratorException } from './exception/ServiceDecoratorException';
-import { ValidatorDecoratorException } from './exception/ValidatorDecoratorException';
+import { ConfigDecoratorException } from './exceptions/ConfigDecoratorException';
+import { DatabaseDecoratorException } from './exceptions/DatabaseDecoratorException';
+import { MailerDecoratorException } from './exceptions/MailerDecoratorException';
+import { MiddlewareDecoratorException } from './exceptions/MiddlewareDecoratorException';
+import { RoleDecoratorException } from './exceptions/RoleDecoratorException';
+import { ServiceDecoratorException } from './exceptions/ServiceDecoratorException';
+import { ValidatorDecoratorException } from './exceptions/ValidatorDecoratorException';
 import type {
   ConfigType,
   ContainerScopeType,
