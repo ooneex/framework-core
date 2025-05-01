@@ -25,12 +25,10 @@
     "emitDecoratorMetadata": true,
     "experimentalDecorators": true,
 
-    // "outDir": "./dist",
-    // "rootDir": "./src",
     "baseUrl": ".",
     "paths": {
-      "@": ["src/index.ts"],
-    },
+      "@": ["src/index.ts"]
+    }
   },
   "include": ["**/*.ts", "**/*.test.ts"]
 }

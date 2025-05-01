@@ -47,7 +47,6 @@
     }
   },
   "files": {
-    "include": ["core/**/*.ts"],
     "ignore": ["node_modules"]
   }
 }
