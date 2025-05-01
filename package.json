@@ -13,13 +13,13 @@
     "lint": "tsc --noEmit && bunx @biomejs/biome check .",
     "build": "tsup --tsconfig tsconfig.prod.json --dts-only && bun run build.ts"
   },
-  "homepage": "https://github.com/ooneex/packages",
+  "homepage": "https://github.com/ooneex/framework-core",
   "repository": {
     "type": "git",
-    "url": "https://github.com/ooneex/packages.git"
+    "url": "https://github.com/ooneex/framework-core.git"
   },
   "bugs": {
-    "url": "https://github.com/ooneex/packages/issues"
+    "url": "https://github.com/ooneex/framework-core/issues"
   },
   "keywords": ["bun", "framework", "api", "rest", "typescript", "ooneex"],
   "devDependencies": {
