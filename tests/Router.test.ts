@@ -157,8 +157,6 @@ describe('Router', () => {
       name: 'create_post',
       path: '/posts',
       method: 'POST',
-      validators: [],
-      middlewares: [],
       controller: TestController,
     });
 
