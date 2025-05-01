@@ -46,9 +46,7 @@ export type RouteConfigType = {
   path: `/${string}`;
   method: MethodType;
   validators?: Partial<Record<ValidationScopeType, ValidatorType[]>>;
-  // TODO: Add unit tests
   middlewares?: Partial<Record<MiddlewareScopeType, MiddlewareType[]>>;
-  // TODO: Add unit tests
   roles?: RoleType[];
   controller: ControllerType;
 };
