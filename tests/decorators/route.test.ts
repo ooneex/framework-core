@@ -13,7 +13,7 @@ import {
   validator,
 } from '@';
 import { CookieMap, type RouterTypes } from 'bun';
-import { createContext } from '../../src/createContext';
+import { buildContext } from '../../src/buildContext';
 
 describe('Route Decorator', () => {
   class BRequest extends Request {
@@ -55,8 +55,8 @@ describe('Route Decorator', () => {
   }
 
   const createTestContext = async (): Promise<ContextType> => {
-    const context = await createContext({
-      req: new BRequest('http://localhost:3000/test'),
+    const context = await buildContext({
+      request: new BRequest('http://localhost:3000/test'),
       ip: '127.0.0.1',
     });
 
