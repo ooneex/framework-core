@@ -5,10 +5,10 @@ import type { ContextType } from './types';
 
 export const createContext = async (config: {
   req: BunRequest;
-  server: Server;
+  server?: Server;
+  ip?: string;
 }): Promise<ContextType> => {
   const req = config.req;
-  const server = config.server;
 
   let payload = {};
   let form: FormData | null = null;
@@ -21,7 +21,7 @@ export const createContext = async (config: {
     form = await req.formData();
   } catch (_e) {}
 
-  const ip = server.requestIP(req)?.address as string;
+  const ip = config.server?.requestIP(req)?.address || config.ip || 'unknown';
 
   const request = new HttpRequest(req, {
     ip,

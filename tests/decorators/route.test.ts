@@ -1,8 +1,6 @@
 import { describe, expect, it } from 'bun:test';
 import {
   type ContextType,
-  HttpRequest,
-  HttpResponse,
   type IResponse,
   Route,
   config,
@@ -15,6 +13,7 @@ import {
   validator,
 } from '@';
 import { CookieMap, type RouterTypes } from 'bun';
+import { createContext } from '../../src/createContext';
 
 describe('Route Decorator', () => {
   class BRequest extends Request {
@@ -55,35 +54,20 @@ describe('Route Decorator', () => {
     }
   }
 
-  function createTestContext(): ContextType {
-    const request = new HttpRequest(
-      new BRequest('http://localhost:3000/test'),
-      { ip: '127.0.0.1' },
-    );
-    const response = new HttpResponse();
+  const createTestContext = async (): Promise<ContextType> => {
+    const context = await createContext({
+      req: new BRequest('http://localhost:3000/test'),
+      ip: '127.0.0.1',
+    });
 
     return {
-      state: {},
-      request,
-      response,
-      exception: null,
-      params: request.params,
-      payload: request.payload,
-      queries: request.queries,
-      cookies: request.cookies,
-      form: request.form,
-      language: request.language,
-      path: request.path,
-      method: request.method,
-      header: request.header,
-      ip: request.ip,
-      host: request.host,
+      ...context,
       user: new User(),
     };
-  }
+  };
 
   describe('Context', () => {
-    it('user', () => {
+    it('user', async () => {
       @Route.get('/test-context-with-user')
       class TestContextWithUserController {
         public action({ response, user, language }: ContextType): IResponse {
@@ -99,7 +83,7 @@ describe('Route Decorator', () => {
 
       const controller = container.get(TestContextWithUserController);
       expect(controller).toBeInstanceOf(TestContextWithUserController);
-      controller.action(createTestContext());
+      controller.action(await createTestContext());
     });
   });
 
@@ -310,7 +294,7 @@ describe('Route Decorator', () => {
       const controller = new (route.controller as typeof TestController)();
       expect(controller).toBeInstanceOf(TestController);
 
-      const context = createTestContext();
+      const context = await createTestContext();
       const result = controller.action(context) as IResponse;
 
       expect(result).toBe(context.response);
@@ -343,7 +327,7 @@ describe('Route Decorator', () => {
       const controller = new (route.controller as typeof TestController)();
       expect(controller).toBeInstanceOf(TestController);
 
-      const context = createTestContext();
+      const context = await createTestContext();
       const result = controller.action(context);
 
       expect(result).toBe(context.response);
@@ -379,7 +363,7 @@ describe('Route Decorator', () => {
       const controller = new (route.controller as typeof TestController)();
       expect(controller).toBeInstanceOf(TestController);
 
-      const context = createTestContext();
+      const context = await createTestContext();
       const result = controller.action(context);
 
       expect(result).toBe(context.response);
