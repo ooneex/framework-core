@@ -25,6 +25,7 @@ export { MailerDecoratorException } from './exceptions/MailerDecoratorException'
 export { MiddlewareDecoratorException } from './exceptions/MiddlewareDecoratorException';
 export { ValidatorDecoratorException } from './exceptions/ValidatorDecoratorException';
 export { RoleDecoratorException } from './exceptions/RoleDecoratorException';
+export { ControllerDecoratorException } from './exceptions/ControllerDecoratorException';
 export { Header } from './header/Header';
 export { HeaderChecker } from './header/HeaderChecker';
 export { ReadonlyHeader } from './header/ReadonlyHeader';
