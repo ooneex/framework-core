@@ -3,6 +3,7 @@ import { HttpRequest } from './HttpRequest';
 import { HttpResponse } from './HttpResponse';
 import type {
   ContextType,
+  ILogger,
   MiddlewareScopeType,
   MiddlewareType,
   ValidationScopeType,
@@ -11,6 +12,7 @@ import type {
 
 export class App {
   public readonly port: number;
+  public readonly logger?: ILogger;
   public readonly hostname: string;
   public readonly isDevelopment: boolean;
   public readonly validators?: Record<ValidationScopeType, ValidatorType[]>;
@@ -19,11 +21,13 @@ export class App {
   // validate envVars
   constructor(config?: {
     port?: number;
+    logger?: ILogger;
     hostname?: string;
     validators?: Record<ValidationScopeType, ValidatorType[]>;
     middlewares?: Record<MiddlewareScopeType, MiddlewareType[]>;
     isDevelopment?: boolean;
   }) {
+    this.logger = config?.logger;
     this.port = config?.port ?? 80;
     this.hostname = config?.hostname ?? '0.0.0.0';
     this.validators = config?.validators;

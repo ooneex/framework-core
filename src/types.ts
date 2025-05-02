@@ -280,6 +280,13 @@ export interface IUser {
   getRoles: () => Promise<string[]> | string[];
 }
 
+export interface ILogger {
+  onRequest: (context: ContextType) => Promise<void> | void;
+  onResponse: (context: ContextType) => Promise<void> | void;
+  onNotFound: (context: ContextType) => Promise<void> | void;
+  onError: (context: ContextType) => Promise<void> | void;
+}
+
 export type UserAgentType = {
   browser: {
     name?: string;
