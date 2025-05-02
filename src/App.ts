@@ -31,7 +31,7 @@ export class App {
     this.isDevelopment = config?.isDevelopment ?? false;
   }
 
-  async start() {
+  async run() {
     // Start the app here
   }
 }
