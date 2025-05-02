@@ -1,5 +1,13 @@
 import { describe, expect, it } from 'bun:test';
-import { type ContextType, Router, RouterException, container } from '@';
+import {
+  type ContextType,
+  ControllerDecoratorException,
+  type IResponse,
+  Route,
+  Router,
+  RouterException,
+  container,
+} from '@';
 
 describe('Router', () => {
   class TestController {
@@ -201,5 +209,24 @@ describe('Router', () => {
     }
 
     expect(container.get(route.controller)).toBeInstanceOf(PostController);
+  });
+
+  describe('Route Decorator', () => {
+    it('should throw error when decorator is used on invalid class', () => {
+      const callback = () => {
+        @Route.get('/test-path')
+        // biome-ignore lint/correctness/noUnusedVariables: trust me
+        class InvalidClass {
+          public action({ response }: ContextType): IResponse {
+            return response.json({ message: 'Hello, World!' });
+          }
+        }
+      };
+
+      expect(callback).toThrow(
+        'Controller decorator can only be used on controller classes. InvalidClass must end with Controller keyword.',
+      );
+      expect(callback).toThrow(ControllerDecoratorException);
+    });
   });
 });
