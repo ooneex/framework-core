@@ -1,7 +1,7 @@
-import { container } from './container.ts';
-import { ControllerDecoratorException } from './exceptions/ControllerDecoratorException.ts';
-import { RouterException } from './exceptions/RouterException.ts';
-import type { RouteConfigType } from './types';
+import { container } from '../container.ts';
+import { ControllerDecoratorException } from '../exceptions/ControllerDecoratorException.ts';
+import { RouterException } from '../exceptions/RouterException.ts';
+import type { RouteConfigType } from '../types.ts';
 
 export class Router {
   private routes: Map<string, RouteConfigType[]> = new Map();
