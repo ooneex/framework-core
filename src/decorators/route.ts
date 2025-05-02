@@ -1,4 +1,4 @@
-import { router } from '../Router';
+import { router } from '../router/Router';
 import type { ControllerType, RouteConfigType } from '../types';
 
 export const Route = {
