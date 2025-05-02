@@ -31,6 +31,8 @@ export class HttpRequest implements IRequest {
   public readonly bearerToken: string | null;
   public readonly language: LanguageType;
 
+  // TODO: add files
+
   constructor(
     public readonly native: Readonly<BunRequest>,
     config: {
