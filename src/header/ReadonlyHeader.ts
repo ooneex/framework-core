@@ -1,8 +1,10 @@
+import { UAParser } from 'ua-parser-js';
 import type {
   CharsetType,
   EncodingType,
   HeaderFieldType,
   IReadonlyHeader,
+  IUserAgent,
   MethodType,
   MimeType,
 } from '../types';
@@ -102,6 +104,10 @@ export class ReadonlyHeader extends HeaderChecker implements IReadonlyHeader {
 
   public getRefererPolicy(): string | null {
     return this.get('Referrer-Policy');
+  }
+
+  public getUserAgent(): IUserAgent {
+    return UAParser(this.get('User-Agent') as string);
   }
 
   public getAuthorization(): string | null {

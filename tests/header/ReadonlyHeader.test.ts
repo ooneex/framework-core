@@ -233,6 +233,33 @@ describe('ReadonlyHeader', () => {
     });
   });
 
+  describe('getUserAgent', () => {
+    it('should parse User-Agent header', () => {
+      const header = createHeader([
+        [
+          'User-Agent',
+          'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/91.0.4472.124 Safari/537.36',
+        ],
+      ]);
+      const ua = header.getUserAgent();
+      expect(ua.browser.name).toBe('Chrome');
+      expect(ua.browser.version).toBe('91.0.4472.124');
+      expect(ua.browser.major).toBe('91');
+      expect(ua.os.name).toBe('Windows');
+      expect(ua.os.version).toBe('10');
+      expect(ua.engine.name).toBe('Blink');
+      expect(ua.engine.version).toBe('91.0.4472.124');
+    });
+
+    it('should return empty values when User-Agent header is not present', () => {
+      const header = createHeader([]);
+      const ua = header.getUserAgent();
+      expect(ua.browser.name).toBeUndefined();
+      expect(ua.os.name).toBeUndefined();
+      expect(ua.engine.name).toBeUndefined();
+    });
+  });
+
   describe('toJson', () => {
     it('should convert header to JSON', () => {
       const header = createHeader([['Authorization', 'Bearer json']]);

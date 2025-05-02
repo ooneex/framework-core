@@ -106,6 +106,7 @@ export interface IRequest {
   readonly url: IUrl;
   readonly method: MethodType;
   readonly header: IReadonlyHeader;
+  readonly userAgent: IUserAgent;
   readonly params: Record<string, ScalarType>;
   readonly payload: Record<string, unknown>;
   readonly queries: Record<string, ScalarType>;
@@ -137,6 +138,7 @@ export interface IReadonlyHeader extends IHeaderChecker {
   getContentLength: () => number | null;
   getContentType: () => string | null;
   getContentDisposition: () => string | null;
+  getUserAgent: () => IUserAgent;
   getAuthorization: () => string | null;
   getBasicAuth: () => string | null;
   getBearerToken: () => string | null;
@@ -276,4 +278,42 @@ export interface IUser {
   getId: () => Promise<string> | string;
   getUsername: () => Promise<string> | string;
   getRoles: () => Promise<string[]> | string[];
+}
+
+export type UserAgentType = {
+  browser: {
+    name?: string;
+    version?: string;
+    major?: string;
+  };
+  engine: {
+    name?: string;
+    version?: string;
+  };
+  os: {
+    name?: string;
+    version?: string;
+  };
+  device: {
+    vendor?: string;
+    model?: string;
+    type?: string;
+  };
+  cpu: {
+    architecture?: string;
+  };
+};
+
+export type UserAgentBrowserType = UserAgentType['browser'];
+export type UserAgentEngineType = UserAgentType['engine'];
+export type UserAgentOsType = UserAgentType['os'];
+export type UserAgentDeviceType = UserAgentType['device'];
+export type UserAgentCpuType = UserAgentType['cpu'];
+
+export interface IUserAgent {
+  readonly browser: UserAgentBrowserType;
+  readonly engine: UserAgentEngineType;
+  readonly os: UserAgentOsType;
+  readonly device: UserAgentDeviceType;
+  readonly cpu: UserAgentCpuType;
 }

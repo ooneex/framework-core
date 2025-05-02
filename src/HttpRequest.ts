@@ -6,6 +6,7 @@ import type {
   IReadonlyHeader,
   IRequest,
   IUrl,
+  IUserAgent,
   LanguageType,
   LocaleType,
   MethodType,
@@ -18,6 +19,7 @@ export class HttpRequest implements IRequest {
   public readonly url: IUrl;
   public readonly method: MethodType;
   public readonly header: IReadonlyHeader;
+  public readonly userAgent: IUserAgent;
   public readonly params: Record<string, ScalarType> = {};
   public readonly payload: Record<string, unknown> = {};
   public readonly queries: Record<string, ScalarType> = {};
@@ -45,6 +47,7 @@ export class HttpRequest implements IRequest {
     this.payload = config?.payload ?? {};
     this.form = config?.form ?? null;
     this.cookies = this.native.cookies ?? new CookieMap();
+    this.userAgent = this.header.getUserAgent();
 
     const params = this.native.params;
     for (const key in params) {
