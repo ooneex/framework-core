@@ -31,7 +31,7 @@ export { HeaderChecker } from './header/HeaderChecker';
 export { ReadonlyHeader } from './header/ReadonlyHeader';
 export { HttpRequest } from './HttpRequest';
 export { HttpResponse } from './HttpResponse';
-export { Router, router } from './Router';
+export { Router, router } from './router/Router';
 export { Url } from './Url';
 export { parseEnvVars } from './utils/parseEnvVars';
 export { parseString } from './utils/parseString';

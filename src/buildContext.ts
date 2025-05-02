@@ -3,12 +3,12 @@ import { HttpRequest } from './HttpRequest';
 import { HttpResponse } from './HttpResponse';
 import type { ContextType } from './types';
 
-export const createContext = async (config: {
-  req: BunRequest;
+export const buildContext = async (config: {
+  request: BunRequest;
   server?: Server;
   ip?: string;
 }): Promise<ContextType> => {
-  const req = config.req;
+  const req = config.request;
 
   let payload = {};
   let form: FormData | null = null;
