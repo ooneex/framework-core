@@ -1,4 +1,5 @@
 import { container } from './container.ts';
+import { ControllerDecoratorException } from './exceptions/ControllerDecoratorException.ts';
 import { RouterException } from './exceptions/RouterException.ts';
 import type { RouteConfigType } from './types';
 
@@ -6,6 +7,14 @@ export class Router {
   private routes: Map<string, RouteConfigType[]> = new Map();
 
   public addRoute(route: RouteConfigType): this {
+    const controllerName = route.controller.prototype.constructor.name;
+
+    if (!controllerName.endsWith('Controller')) {
+      throw new ControllerDecoratorException(
+        `Controller decorator can only be used on controller classes. ${controllerName} must end with Controller keyword.`,
+      );
+    }
+
     const name = route.name;
 
     for (const item of this.routes[Symbol.iterator]()) {

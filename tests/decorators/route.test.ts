@@ -41,6 +41,20 @@ describe('Route Decorator', () => {
     }
   }
 
+  class User {
+    public getId(): string {
+      return '1b44a75f-3fed-4b94-a23c-d046abbe22a5';
+    }
+
+    public getRoles(): string[] {
+      return ['ROLE_USER'];
+    }
+
+    public getUsername(): string {
+      return 'john@example.com';
+    }
+  }
+
   function createTestContext(): ContextType {
     const request = new HttpRequest(
       new BRequest('http://localhost:3000/test'),
@@ -64,11 +78,36 @@ describe('Route Decorator', () => {
       header: request.header,
       ip: request.ip,
       host: request.host,
+      user: new User(),
     };
   }
 
+  describe('Context', () => {
+    it('user', () => {
+      @Route.get('/test-context-with-user')
+      class TestContextWithUserController {
+        public action({ response, user, language }: ContextType): IResponse {
+          expect(language).toEqual({ code: 'en', region: 'US' });
+          expect(user).toBeInstanceOf(User);
+          expect(user?.getId()).toBe('1b44a75f-3fed-4b94-a23c-d046abbe22a5');
+          expect(user?.getRoles()).toEqual(['ROLE_USER']);
+          expect(user?.getUsername()).toEqual('john@example.com');
+
+          return response.json({ message: 'Hello, World!' });
+        }
+      }
+
+      const controller = container.get(TestContextWithUserController);
+      expect(controller).toBeInstanceOf(TestContextWithUserController);
+      controller.action(createTestContext());
+    });
+  });
+
   it('get', () => {
-    @Route.get('/posts', { name: 'get_all_posts' })
+    @Route.get('/posts', {
+      name: 'get_all_posts',
+      description: 'Get all posts',
+    })
     class Controller {
       public action({ response }: ContextType): IResponse {
         return response.json({ message: 'Hello, World!' });
@@ -81,6 +120,7 @@ describe('Route Decorator', () => {
     expect(route?.method).toEqual('GET');
     expect(route?.path).toEqual('/posts');
     expect(route?.name).toEqual('get_all_posts');
+    expect(route?.description).toEqual('Get all posts');
   });
 
   it('post', () => {
@@ -97,6 +137,7 @@ describe('Route Decorator', () => {
     expect(route?.method).toEqual('POST');
     expect(route?.path).toEqual('/posts');
     expect(route?.name).toEqual('create_post');
+    expect(route?.description).toBeUndefined();
   });
 
   it('put', () => {
