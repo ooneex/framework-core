@@ -35,6 +35,25 @@ describe('Validator Decorator', () => {
     expect(instance1).not.toBe(instance2);
   });
 
+  it('should register validator class with request scope', () => {
+    @validator('request')
+    class RequestScopedValidator {
+      public beforeValidation(data: any): Promise<any> | any {
+        return data;
+      }
+    }
+
+    const instance1 = container.get<RequestScopedValidator>(
+      RequestScopedValidator,
+    );
+    const instance2 = container.get<RequestScopedValidator>(
+      RequestScopedValidator,
+    );
+    expect(instance1).toBeDefined();
+    expect(instance2).toBeDefined();
+    expect(instance1).not.toBe(instance2);
+  });
+
   it('should register validator class with singleton scope by default', () => {
     @validator()
     class SingletonScopedValidator {

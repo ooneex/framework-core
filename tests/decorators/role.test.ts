@@ -31,6 +31,21 @@ describe('Role Decorator', () => {
     expect(instance1).not.toBe(instance2);
   });
 
+  it('should register role class with request scope', () => {
+    @role('request')
+    class RequestScopedRole {
+      public getRoles(): Promise<string[]> | string[] {
+        return ['ROLE_USER', 'ROLE_ADMIN'];
+      }
+    }
+
+    const instance1 = container.get<RequestScopedRole>(RequestScopedRole);
+    const instance2 = container.get<RequestScopedRole>(RequestScopedRole);
+    expect(instance1).toBeDefined();
+    expect(instance2).toBeDefined();
+    expect(instance1).not.toBe(instance2);
+  });
+
   it('should register role class with singleton scope by default', () => {
     @role()
     class SingletonScopedRole {

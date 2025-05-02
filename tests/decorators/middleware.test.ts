@@ -41,6 +41,25 @@ describe('Middleware Decorator', () => {
     expect(instance1).not.toBe(instance2);
   });
 
+  it('should register middleware class with request scope', () => {
+    @middleware('request')
+    class RequestScopedMiddleware {
+      public next(context: ContextType): Promise<ContextType> | ContextType {
+        return context;
+      }
+    }
+
+    const instance1 = container.get<RequestScopedMiddleware>(
+      RequestScopedMiddleware,
+    );
+    const instance2 = container.get<RequestScopedMiddleware>(
+      RequestScopedMiddleware,
+    );
+    expect(instance1).toBeDefined();
+    expect(instance2).toBeDefined();
+    expect(instance1).not.toBe(instance2);
+  });
+
   it('should register middleware class with singleton scope by default', () => {
     @middleware()
     class SingletonScopedMiddleware {

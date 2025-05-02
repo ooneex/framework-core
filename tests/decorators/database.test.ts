@@ -44,6 +44,29 @@ describe('Database Decorator', () => {
     expect(instance1).not.toBe(instance2);
   });
 
+  it('should register database class with request scope', () => {
+    @database('request')
+    class RequestScopedDatabase {
+      public open<T>(): T {
+        return 'open' as T;
+      }
+
+      public close<T>(): T {
+        return 'close' as T;
+      }
+    }
+
+    const instance1 = container.get<RequestScopedDatabase>(
+      RequestScopedDatabase,
+    );
+    const instance2 = container.get<RequestScopedDatabase>(
+      RequestScopedDatabase,
+    );
+    expect(instance1).toBeDefined();
+    expect(instance2).toBeDefined();
+    expect(instance1).not.toBe(instance2);
+  });
+
   it('should register database class with singleton scope by default', () => {
     @database()
     class SingletonScopedDatabase {

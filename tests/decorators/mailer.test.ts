@@ -35,6 +35,21 @@ describe('Mailer Decorator', () => {
     expect(instance1).not.toBe(instance2);
   });
 
+  it('should register mailer class with request scope', () => {
+    @mailer('request')
+    class RequestScopedMailer {
+      public send<T>(): T {
+        return 'sent' as T;
+      }
+    }
+
+    const instance1 = container.get<RequestScopedMailer>(RequestScopedMailer);
+    const instance2 = container.get<RequestScopedMailer>(RequestScopedMailer);
+    expect(instance1).toBeDefined();
+    expect(instance2).toBeDefined();
+    expect(instance1).not.toBe(instance2);
+  });
+
   it('should register mailer class with singleton scope by default', () => {
     @mailer()
     class SingletonScopedMailer {

@@ -35,6 +35,21 @@ describe('Config Decorator', () => {
     expect(instance1).not.toBe(instance2);
   });
 
+  it('should register config class with request scope', () => {
+    @config('request')
+    class RequestScopedConfig {
+      public get<T>(): T {
+        return { value: 'test' } as T;
+      }
+    }
+
+    const instance1 = container.get<RequestScopedConfig>(RequestScopedConfig);
+    const instance2 = container.get<RequestScopedConfig>(RequestScopedConfig);
+    expect(instance1).toBeDefined();
+    expect(instance2).toBeDefined();
+    expect(instance1).not.toBe(instance2);
+  });
+
   it('should register config class with singleton scope by default', () => {
     @config()
     class SingletonScopedConfig {
