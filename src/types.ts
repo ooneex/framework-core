@@ -49,6 +49,7 @@ export type RouteConfigType = {
   middlewares?: Partial<Record<MiddlewareScopeType, MiddlewareType[]>>;
   roles?: RoleType[];
   controller: ControllerType;
+  description?: string;
 };
 
 export type StatusCodeType = (typeof STATUS_CODE)[keyof typeof STATUS_CODE];
@@ -70,8 +71,7 @@ export type ContextType = {
   header: IReadonlyHeader;
   ip: string;
   host: string;
-  // TODO: Add unit tests
-  user?: UserType;
+  user?: IUser;
 };
 
 export type ValidationScopeType =
@@ -272,12 +272,8 @@ export type RoleType = {
   };
 };
 
-export type UserType = {
-  new (
-    ...args: any[]
-  ): {
-    getId: <T extends string | number>() => Promise<T> | T;
-    getUsername: () => Promise<string> | string;
-    getRoles: () => Promise<string[]> | string[];
-  };
-};
+export interface IUser {
+  getId: () => Promise<string> | string;
+  getUsername: () => Promise<string> | string;
+  getRoles: () => Promise<string[]> | string[];
+}
