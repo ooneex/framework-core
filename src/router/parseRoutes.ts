@@ -1,9 +1,16 @@
 import type { BunRequest, Server } from 'bun';
-import type { MethodType } from '../types';
-import type { Router } from './Router';
+import type {
+  IRouter,
+  MethodType,
+  MiddlewareScopeType,
+  MiddlewareType,
+} from '../types';
 import { handleRoute } from './handleRoute';
 
-export const parseRoutes = async (router: Router) => {
+export const parseRoutes = async (
+  router: IRouter,
+  config?: { middlewares?: Record<MiddlewareScopeType, MiddlewareType[]> },
+) => {
   const result: Record<
     string,
     Partial<
@@ -23,7 +30,13 @@ export const parseRoutes = async (router: Router) => {
       result[path][route.method] = async (
         request: BunRequest,
         server: Server,
-      ) => handleRoute({ request, server, route });
+      ) =>
+        await handleRoute({
+          request,
+          server,
+          route,
+          middlewares: config?.middlewares,
+        });
     }
   }
 

@@ -254,7 +254,9 @@ export type MiddlewareType = {
   new (
     ...args: any[]
   ): {
-    next: (context: ContextType) => Promise<ContextType> | ContextType;
+    next: (
+      context: ContextType,
+    ) => Promise<ContextType | IResponse> | ContextType | IResponse;
   };
 };
 
@@ -278,6 +280,10 @@ export interface IUser {
   getId: () => Promise<string> | string;
   getUsername: () => Promise<string> | string;
   getRoles: () => Promise<string[]> | string[];
+}
+
+export interface IRouter {
+  getRoutes: () => Map<string, RouteConfigType[]>;
 }
 
 export interface ILogger {
