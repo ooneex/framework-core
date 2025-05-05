@@ -13,7 +13,7 @@ import {
 import type { CharsetType, IRequest, IResponse, StatusCodeType } from './types';
 
 export class HttpResponse implements IResponse {
-  private data: Record<string, unknown> = {};
+  private data: Record<string, unknown> | null = null;
   private message: string | null = null;
   private status: StatusCodeType = 200;
   public readonly header: Header = new Header();
@@ -44,7 +44,7 @@ export class HttpResponse implements IResponse {
     status: StatusCodeType = STATUS_CODE.InternalServerError,
   ): this {
     this.message = message;
-    this.data = data ?? {};
+    this.data = data;
     this.status = status;
     this.header.delete('Accept');
     this.header.delete('Content-Type');
@@ -105,7 +105,7 @@ export class HttpResponse implements IResponse {
     };
 
     const data = {
-      data: this.data,
+      data: this.data || {},
       message: this.message,
       success: this.isSuccessful(),
       status: this.status,
