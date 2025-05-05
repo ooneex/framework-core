@@ -2,6 +2,9 @@ export * from './types';
 export * from './status';
 export * from './locales';
 
+export * from 'class-validator';
+export * from 'class-transformer';
+
 export { config } from './decorators/config';
 export { database } from './decorators/database';
 export { mailer } from './decorators/mailer';
@@ -26,6 +29,7 @@ export { MiddlewareDecoratorException } from './exceptions/MiddlewareDecoratorEx
 export { ValidatorDecoratorException } from './exceptions/ValidatorDecoratorException';
 export { RoleDecoratorException } from './exceptions/RoleDecoratorException';
 export { ControllerDecoratorException } from './exceptions/ControllerDecoratorException';
+export { ValidationException } from './exceptions/ValidationException';
 export { Header } from './header/Header';
 export { HeaderChecker } from './header/HeaderChecker';
 export { ReadonlyHeader } from './header/ReadonlyHeader';
