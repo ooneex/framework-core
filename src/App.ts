@@ -1,3 +1,4 @@
+import { container } from './container';
 import type {
   IRouter,
   MiddlewareScopeType,
@@ -5,6 +6,7 @@ import type {
   ValidationScopeType,
   ValidatorType,
 } from './types';
+import { parseEnvVars } from './utils/parseEnvVars';
 
 export class App {
   public readonly port: number;
@@ -14,7 +16,7 @@ export class App {
   public readonly middlewares?: Record<MiddlewareScopeType, MiddlewareType[]>;
 
   // TODO: notFoundController
-  // TODO: serverErrorController
+  // TODO: errorController
   constructor(config?: {
     port?: number;
     hostname?: string;
@@ -29,7 +31,10 @@ export class App {
     this.validators = config?.validators;
     this.middlewares = config?.middlewares;
 
-    // TODO: parseEnvironmentVariables
+    const envs = parseEnvVars();
+    for (const [key, value] of Object.entries(envs)) {
+      container.bind(`env.${key}`).toConstantValue(value);
+    }
   }
 
   async run() {
