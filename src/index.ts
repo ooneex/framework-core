@@ -2,8 +2,7 @@ export * from './types';
 export * from './status';
 export * from './locales';
 
-export * from 'class-validator';
-export * from 'class-transformer';
+export * from './validation/validation';
 
 export { config } from './decorators/config';
 export { database } from './decorators/database';

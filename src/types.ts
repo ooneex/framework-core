@@ -72,6 +72,7 @@ export type ContextType = {
   ip: string;
   host: string;
   user?: IUser;
+  // TODO: route
 };
 
 export type ValidationScopeType =
@@ -330,3 +331,12 @@ export interface IUserAgent {
   readonly device: UserAgentDeviceType;
   readonly cpu: UserAgentCpuType;
 }
+
+export type ValidationResultType = {
+  success: boolean;
+  details: {
+    property: string;
+    value: string;
+    constraints: { name: string; message: string }[];
+  }[];
+};
