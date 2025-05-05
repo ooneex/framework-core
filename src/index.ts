@@ -40,6 +40,7 @@ export { parseEnvVars } from './utils/parseEnvVars';
 export { parseString } from './utils/parseString';
 export { toCamelCase } from './utils/toCamelCase';
 export { trim } from './utils/trim';
+export { toKebabCase } from './utils/toKebabCase';
 export { capitalizeWord } from './utils/capitalizeWord';
 export { splitToWords } from './utils/splitToWords';
 export { container, inject, injectable } from './container';
