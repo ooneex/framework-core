@@ -9,7 +9,6 @@ export { config } from './decorators/config';
 export { database } from './decorators/database';
 export { mailer } from './decorators/mailer';
 export { middleware } from './decorators/middleware';
-export { role } from './decorators/role';
 export { service } from './decorators/service';
 export { validator } from './decorators/validator';
 export { Route } from './decorators/route';
@@ -27,8 +26,8 @@ export { DatabaseDecoratorException } from './exceptions/DatabaseDecoratorExcept
 export { MailerDecoratorException } from './exceptions/MailerDecoratorException';
 export { MiddlewareDecoratorException } from './exceptions/MiddlewareDecoratorException';
 export { ValidatorDecoratorException } from './exceptions/ValidatorDecoratorException';
-export { RoleDecoratorException } from './exceptions/RoleDecoratorException';
 export { ControllerDecoratorException } from './exceptions/ControllerDecoratorException';
+export { UnauthorizedException } from './exceptions/UnauthorizedException';
 export { ValidationException } from './exceptions/ValidationException';
 export { Header } from './header/Header';
 export { HeaderChecker } from './header/HeaderChecker';

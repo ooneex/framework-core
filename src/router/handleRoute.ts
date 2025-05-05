@@ -1,10 +1,11 @@
 import type { BunRequest, Server } from 'bun';
 import { plainToClassFromExist } from 'class-transformer';
-import { type ValidationError, validateSync } from 'class-validator';
-import { ValidationException } from 'src/exceptions/ValidationException';
+import { type ValidationError, validate } from 'class-validator';
 import { HttpResponse } from '../HttpResponse';
 import { buildContext } from '../buildContext';
 import { container } from '../container';
+import { UnauthorizedException } from '../exceptions/UnauthorizedException';
+import { ValidationException } from '../exceptions/ValidationException';
 import type {
   ContextType,
   IResponse,
@@ -20,12 +21,13 @@ export const handleRoute = async (config: {
   server?: Server;
   ip?: string;
   route: RouteConfigType;
-  middlewares?: Record<MiddlewareScopeType, MiddlewareType[]>;
+  middlewares?: Partial<Record<MiddlewareScopeType, MiddlewareType[]>>;
 }): Promise<Response> => {
   let context = await buildContext({
     request: config.request,
     server: config.server,
     ip: config.ip,
+    route: config.route,
   });
 
   const globalRequestMiddlewares = config.middlewares?.request || [];
@@ -37,8 +39,6 @@ export const handleRoute = async (config: {
     context = response as ContextType;
   }
 
-  //  TODO: check roles
-
   const controllerRequestMiddlewares = config.route.middlewares?.request || [];
   for (const middleware of controllerRequestMiddlewares) {
     const response = await runMiddleware(middleware, context);
@@ -48,12 +48,32 @@ export const handleRoute = async (config: {
     context = response as ContextType;
   }
 
+  if (context.user && config.route.roles) {
+    const userRoles = context.user.getRoles();
+    const routeRoles = config.route.roles;
+
+    for (const userRole of userRoles) {
+      if (!routeRoles.includes(userRole)) {
+        throw new UnauthorizedException('Access denied', {
+          params: context.params,
+          payload: context.payload,
+          queries: context.queries,
+          language: context.language,
+          path: context.path,
+          method: context.method,
+          ip: context.ip,
+          host: context.host,
+        });
+      }
+    }
+  }
+
   const controllerParamsValidators = config.route.validators?.params || [];
-  await runValidator(controllerParamsValidators, context.params);
+  await runValidators(controllerParamsValidators, context.params);
   const controllerPayloadValidators = config.route.validators?.payload || [];
-  await runValidator(controllerPayloadValidators, context.payload);
+  await runValidators(controllerPayloadValidators, context.payload);
   const controllerQueriesValidators = config.route.validators?.queries || [];
-  await runValidator(controllerQueriesValidators, context.queries);
+  await runValidators(controllerQueriesValidators, context.queries);
 
   const controller = container.get(config.route.controller);
   context.response = await controller.action(context);
@@ -61,7 +81,7 @@ export const handleRoute = async (config: {
   const controllerResponseValidators = config.route.validators?.response || [];
   const data = context.response.getData();
   if (data) {
-    await runValidator(controllerResponseValidators, data);
+    await runValidators(controllerResponseValidators, data);
   }
 
   const controllerResponseMiddlewares =
@@ -86,7 +106,7 @@ export const handleRoute = async (config: {
   return context.response.build(context.request);
 };
 
-const runMiddleware = async (
+export const runMiddleware = async (
   middleware: MiddlewareType,
   context: ContextType,
 ): Promise<ContextType | IResponse> => {
@@ -100,14 +120,14 @@ const runMiddleware = async (
   return context;
 };
 
-const runValidator = async (
+export const runValidators = async (
   validators: ValidatorType[],
   data: Record<string, any>,
 ): Promise<void> => {
   for (const validator of validators) {
     const instance = plainToClassFromExist(container.get(validator), data);
 
-    const errors = validateSync(instance, {
+    const errors = await validate(instance, {
       whitelist: true,
       forbidUnknownValues: true,
     });
@@ -123,7 +143,7 @@ const runValidator = async (
   }
 };
 
-const parseValidationErrors = (
+export const parseValidationErrors = (
   errors: ValidationError[],
 ): ValidationResultType => {
   return {

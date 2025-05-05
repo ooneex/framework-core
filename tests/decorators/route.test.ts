@@ -7,7 +7,6 @@ import {
   container,
   inject,
   middleware,
-  role,
   router,
   service,
   validator,
@@ -487,38 +486,5 @@ describe('Route Decorator', () => {
 
     const postMiddleware = container.get(CreatePostMiddleware);
     expect(postMiddleware).toBeInstanceOf(CreatePostMiddleware);
-  });
-
-  it('should have route roles', () => {
-    @role()
-    class CreatePostRole {
-      public getRoles(): string[] {
-        return ['ROLE_USER'];
-      }
-    }
-
-    @Route.post('/posts', {
-      name: 'create-post-with-roles',
-      roles: [CreatePostRole],
-    })
-    class PostController {
-      public async action({ response }: ContextType): Promise<IResponse> {
-        return response.json({
-          message: 'ok',
-        });
-      }
-    }
-
-    const controller = container.get(PostController);
-    expect(controller).toBeInstanceOf(PostController);
-
-    const route = router.findRouteByName('create-post-with-roles');
-    expect(route).toBeDefined();
-    expect(route?.roles).toBeDefined();
-    expect(route?.roles).toBeArrayOfSize(1);
-    expect(route?.roles?.[0]).toEqual(CreatePostRole);
-
-    const postRole = container.get(CreatePostRole);
-    expect(postRole).toBeInstanceOf(CreatePostRole);
   });
 });

@@ -47,7 +47,7 @@ export type RouteConfigType = {
   method: MethodType;
   validators?: Partial<Record<ValidationScopeType, ValidatorType[]>>;
   middlewares?: Partial<Record<MiddlewareScopeType, MiddlewareType[]>>;
-  roles?: RoleType[];
+  roles?: string[];
   controller: ControllerType;
   description?: string;
 };
@@ -72,7 +72,7 @@ export type ContextType = {
   ip: string;
   host: string;
   user?: IUser;
-  // TODO: route
+  route?: RouteConfigType;
 };
 
 export type ValidationScopeType =
@@ -262,36 +262,26 @@ export type MiddlewareType = {
 };
 
 export type ValidatorType = {
-  new (
-    ...args: any[]
-  ): {
-    beforeValidation?: <T = any>(data: T) => Promise<any> | any;
-  };
+  // biome-ignore lint/complexity/noBannedTypes: trust me
+  new (...args: any[]): {};
 };
 
 export type RoleType = {
   new (
     ...args: any[]
   ): {
-    getRoles: () => Promise<string[]> | string[];
+    getRoles: () => string[];
   };
 };
 
 export interface IUser {
-  getId: () => Promise<string> | string;
-  getUsername: () => Promise<string> | string;
-  getRoles: () => Promise<string[]> | string[];
+  getId: () => string;
+  getUsername: () => string;
+  getRoles: () => string[];
 }
 
 export interface IRouter {
   getRoutes: () => Map<string, RouteConfigType[]>;
-}
-
-export interface ILogger {
-  onRequest: (context: ContextType) => Promise<void> | void;
-  onResponse: (context: ContextType) => Promise<void> | void;
-  onNotFound: (context: ContextType) => Promise<void> | void;
-  onError: (context: ContextType) => Promise<void> | void;
 }
 
 export type UserAgentType = {

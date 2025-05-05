@@ -28,6 +28,8 @@ export class App {
     this.router = config?.router;
     this.validators = config?.validators;
     this.middlewares = config?.middlewares;
+
+    // TODO: parseEnvironmentVariables
   }
 
   async run() {

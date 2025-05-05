@@ -6,7 +6,6 @@ import type {
   DatabaseType,
   MailerType,
   MiddlewareType,
-  RoleType,
   ServiceType,
   ValidatorType,
 } from '../types';
@@ -18,8 +17,7 @@ export const registerWithScope = (
     | DatabaseType
     | MailerType
     | MiddlewareType
-    | ValidatorType
-    | RoleType,
+    | ValidatorType,
   scope: ContainerScopeType = EContainerScope.Singleton,
 ) => {
   const binding = container.bind(target).toSelf();
