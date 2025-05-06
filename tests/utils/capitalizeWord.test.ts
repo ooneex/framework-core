@@ -1,5 +1,5 @@
 import { describe, expect, it } from 'bun:test';
-import {capitalizeWord} from "@";
+import { capitalizeWord } from '@';
 
 describe('capitalizeWord', () => {
   it('handles an empty string', () => {
