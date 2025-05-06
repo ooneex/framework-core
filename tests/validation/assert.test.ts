@@ -4,6 +4,6 @@ import { Assert } from '@';
 describe('Validation', () => {
   it('should export asserts', () => {
     expect(Assert).toBeObject();
-    expect(Object.keys(Assert)).toBeArrayOfSize(108);
+    expect(Object.keys(Assert)).toBeArrayOfSize(109);
   });
 });

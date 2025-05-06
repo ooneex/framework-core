@@ -355,3 +355,21 @@ export interface IRequestFile {
   write(path: string): Promise<void>;
   store(storage: IStorage, directory?: string): Promise<string>;
 }
+
+export type IsFileOptionsType = {
+  mimeTypes?: MimeType[];
+  maxSize?: number;
+  minSize?: number;
+  extensions?: string[];
+  isImage?: boolean;
+  isSvg?: boolean;
+  isVideo?: boolean;
+  isAudio?: boolean;
+  isPdf?: boolean;
+  isText?: boolean;
+  isExcel?: boolean;
+  isCsv?: boolean;
+  isJson?: boolean;
+  isXml?: boolean;
+  isHtml?: boolean;
+};

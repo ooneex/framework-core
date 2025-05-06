@@ -108,8 +108,10 @@ import {
   ValidateNested,
   ValidatePromise,
 } from 'class-validator';
+import { IsFile } from './IsFile';
 
 export const Assert = {
+  IsFile,
   Validate,
   ValidateIf,
   ValidatePromise,
