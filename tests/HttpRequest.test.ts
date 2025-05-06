@@ -134,6 +134,22 @@ describe('HttpRequest', () => {
     expect(field2).toBe('value2');
   });
 
+  it('should handle file uploads in form data', async () => {
+    const formData = new FormData();
+    const file = new File(['test content'], 'test.txt', { type: 'text/plain' });
+    formData.append('test', file);
+
+    const request = new HttpRequest(new BRequest('http://localhost:3000'), {
+      form: formData,
+      ip: '192.168.1.1',
+    });
+
+    const uploadedFile = request.files.test;
+    expect(uploadedFile?.originalName).toBe('test.txt');
+    expect(uploadedFile?.name).toBeDefined();
+    expect(uploadedFile?.type).toBe('text/plain');
+  });
+
   it('should parse ip correctly', () => {
     const request = new HttpRequest(new BRequest('http://localhost:3000'), {
       ip: '127.0.0.1',
