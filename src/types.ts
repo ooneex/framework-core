@@ -63,6 +63,7 @@ export type ContextType = {
   params: Record<string, ScalarType>;
   payload: Record<string, unknown>;
   queries: Record<string, ScalarType>;
+  files: Record<string, IRequestFile>;
   cookies: CookieMap | null;
   form: FormData | null;
   language: LanguageType;
@@ -330,3 +331,27 @@ export type ValidationResultType = {
     constraints: { name: string; message: string }[];
   }[];
 };
+
+export interface IRequestFile {
+  readonly name: string;
+  readonly originalName: string;
+  readonly type: MimeType;
+  readonly size: number;
+  readonly extension: string;
+  readonly isImage: boolean;
+  readonly isVideo: boolean;
+  readonly isAudio: boolean;
+  readonly isPdf: boolean;
+  readonly isText: boolean;
+  readonly isExcel: boolean;
+  readonly isCsv: boolean;
+  readonly isJson: boolean;
+  readonly isXml: boolean;
+  readonly isHtml: boolean;
+  readonly isSvg: boolean;
+  readAsArrayBuffer(): Promise<ArrayBuffer>;
+  readAsStream(): ReadableStream<Uint8Array>;
+  readAsText(): Promise<string>;
+  write(path: string): Promise<void>;
+  store(storage: IStorage, directory?: string): Promise<string>;
+}

@@ -1,10 +1,12 @@
 import parser from 'accept-language-parser';
 import { type BunRequest, CookieMap, type RouterTypes } from 'bun';
+import { RequestFile } from './RequestFile';
 import { Url } from './Url';
 import { ReadonlyHeader } from './header/ReadonlyHeader';
 import type {
   IReadonlyHeader,
   IRequest,
+  IRequestFile,
   IUrl,
   IUserAgent,
   LanguageType,
@@ -25,13 +27,12 @@ export class HttpRequest implements IRequest {
   public readonly queries: Record<string, ScalarType> = {};
   public readonly cookies: CookieMap;
   public readonly form: FormData | null;
+  public readonly files: Record<string, IRequestFile> = {};
   public readonly ip: string;
   public readonly host: string;
   public readonly referer: string | null;
   public readonly bearerToken: string | null;
   public readonly language: LanguageType;
-
-  // TODO: add files
 
   constructor(
     public readonly native: Readonly<BunRequest>,
@@ -50,6 +51,14 @@ export class HttpRequest implements IRequest {
     this.form = config?.form ?? null;
     this.cookies = this.native.cookies ?? new CookieMap();
     this.userAgent = this.header.getUserAgent();
+
+    if (config?.form) {
+      config.form.forEach((value, key) => {
+        if (value instanceof File) {
+          this.files[key] = new RequestFile(value);
+        }
+      });
+    }
 
     const params = this.native.params;
     for (const key in params) {

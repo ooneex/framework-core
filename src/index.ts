@@ -36,6 +36,7 @@ export { HttpRequest } from './HttpRequest';
 export { HttpResponse } from './HttpResponse';
 export { Router, router } from './router/Router';
 export { Url } from './Url';
+export { RequestFile } from './RequestFile';
 export { parseEnvVars } from './utils/parseEnvVars';
 export { parseString } from './utils/parseString';
 export { toCamelCase } from './utils/toCamelCase';

@@ -40,6 +40,7 @@ export const buildContext = async (config: {
     params: request.params,
     payload: request.payload,
     queries: request.queries,
+    files: request.files,
     cookies: request.cookies,
     form: request.form,
     language: request.language,
