@@ -155,4 +155,46 @@ describe('router', () => {
 
     expect(Object.keys(parsedRoutes).length).toBe(0);
   });
+
+  it('parseRoutes with error in route handler', async () => {
+    const router = new Router();
+
+    class ThrowingController {
+      public action() {
+        throw new Error('Test error');
+      }
+    }
+
+    router.addRoute({
+      name: 'throwing_route',
+      path: '/error-throwing',
+      method: 'GET',
+      controller: ThrowingController,
+    } as any);
+
+    const parsedRoutes = await parseRoutes(router);
+
+    expect(parsedRoutes['/error-throwing'].GET).toBeFunction();
+
+    const mockRequest = {
+      json: async () => ({}),
+      formData: async () => new FormData(),
+      url: 'http://localhost/error-throwing',
+      method: 'GET',
+      headers: new Headers(),
+    } as any;
+
+    const mockServer = {
+      requestIP: () => ({ address: '127.0.0.1' }),
+    } as any;
+
+    // Execute the route handler which should catch the error and use the default error handling
+    const response = await (parsedRoutes as any)['/error-throwing'].GET(
+      mockRequest,
+      mockServer,
+    );
+
+    // Verify the response is an error response
+    expect(response.status).not.toBe(200);
+  });
 });
