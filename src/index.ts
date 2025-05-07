@@ -38,6 +38,7 @@ export { HttpRequest } from './HttpRequest';
 export { HttpResponse } from './HttpResponse';
 export { Router, router } from './router/Router';
 export { Url } from './Url';
+export { AbstractStorage } from './AbstractStorage';
 export { RequestFile } from './RequestFile';
 export { parseEnvVars } from './utils/parseEnvVars';
 export { parseString } from './utils/parseString';
