@@ -12,6 +12,7 @@ export { middleware } from './decorators/middleware';
 export { service } from './decorators/service';
 export { validator } from './decorators/validator';
 export { storage } from './decorators/storage';
+export { repository } from './decorators/repository';
 export { Route } from './decorators/route';
 
 export { App } from './App';

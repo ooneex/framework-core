@@ -217,6 +217,18 @@ export interface IStorage {
   getAsStream(key: string): ReadableStream;
 }
 
+export type RepositoryType = {
+  new (
+    ...args: any[]
+  ): {
+    get<Return = any>(id: string): Promise<Return>;
+  };
+};
+
+export interface IRepository {
+  get<Return = any>(id: string): Promise<Return>;
+}
+
 export type ControllerType = {
   new (
     ...args: any[]
