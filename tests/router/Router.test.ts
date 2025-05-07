@@ -211,6 +211,105 @@ describe('Router', () => {
     expect(container.get(route.controller)).toBeInstanceOf(PostController);
   });
 
+  it('should throw error when trying to add a controller without Controller suffix', () => {
+    const router = new Router();
+
+    class InvalidService {
+      public action({ response }: ContextType) {
+        return response.json({ message: 'Hello, World!' });
+      }
+    }
+
+    const throwableFunction = () => {
+      router.addRoute({
+        name: 'invalid_service',
+        path: '/service',
+        method: 'GET',
+        controller: InvalidService,
+      });
+    };
+
+    expect(throwableFunction).toThrow(ControllerDecoratorException);
+    expect(throwableFunction).toThrow(
+      'Controller decorator can only be used on controller classes. InvalidService must end with Controller keyword.',
+    );
+  });
+
+  it('should properly handle complex paths with parameters', () => {
+    const router = new Router();
+
+    router.addRoute({
+      name: 'get_user_post',
+      path: '/users/:userId/posts/:postId',
+      method: 'GET',
+      controller: TestController,
+    });
+
+    const route = router.findRouteByName('get_user_post');
+    expect(route).toBeDefined();
+    expect(route?.path).toBe('/users/:userId/posts/:postId');
+  });
+
+  it('should work with empty routes map', () => {
+    const router = new Router();
+
+    expect(router.getRoutes().size).toBe(0);
+    expect(router.findRouteByPath('/anything')).toBeNull();
+    expect(router.findRouteByName('anything')).toBeNull();
+  });
+
+  it('should properly register singleton controller instances', () => {
+    class UserTestController {
+      public count = 0;
+
+      public increment() {
+        this.count++;
+        return this.count;
+      }
+    }
+
+    const router = new Router();
+
+    // Register only once to avoid container binding conflicts
+    router.addRoute({
+      name: 'get_user',
+      path: '/users',
+      method: 'GET',
+      controller: UserTestController,
+    } as any);
+
+    // Add second route with different controller
+    class PostTestController {
+      public action({ response }: ContextType) {
+        return response.json({ message: 'Post created' });
+      }
+    }
+
+    router.addRoute({
+      name: 'create_post',
+      path: '/posts',
+      method: 'POST',
+      controller: PostTestController,
+    });
+
+    const route = router.findRouteByName('get_user');
+    expect(route).toBeDefined();
+
+    if (!route) {
+      throw new Error('Route not found');
+    }
+
+    const controller = container.get<UserTestController>(route.controller);
+    expect(controller).toBeInstanceOf(UserTestController);
+    expect(controller.count).toBe(0);
+
+    controller.increment();
+
+    const sameController = container.get<UserTestController>(route.controller);
+    expect(sameController).toBe(controller);
+    expect(sameController.count).toBe(1);
+  });
+
   describe('Route Decorator', () => {
     it('should throw error when decorator is used on invalid class', () => {
       const callback = () => {
@@ -227,6 +326,17 @@ describe('Router', () => {
         'Controller decorator can only be used on controller classes. InvalidClass must end with Controller keyword.',
       );
       expect(callback).toThrow(ControllerDecoratorException);
+    });
+
+    it('should handle valid controller with decorator', () => {
+      @Route.get('/products')
+      class ProductsController {
+        public action({ response }: ContextType): IResponse {
+          return response.json({ products: [] });
+        }
+      }
+
+      expect(ProductsController.name).toBe('ProductsController');
     });
   });
 });
