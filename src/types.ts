@@ -56,10 +56,10 @@ export type StatusCodeType = (typeof STATUS_CODE)[keyof typeof STATUS_CODE];
 export type StatusTextType = (typeof STATUS_TEXT)[keyof typeof STATUS_TEXT];
 
 export type ContextType = {
-  state: Record<string, unknown>;
+  state: Record<string, ScalarType>;
   request: IRequest;
   response: IResponse;
-  exception: Exception | null;
+  exception?: Exception;
   params: Record<string, ScalarType>;
   payload: Record<string, unknown>;
   queries: Record<string, ScalarType>;

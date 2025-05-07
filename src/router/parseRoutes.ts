@@ -1,15 +1,20 @@
 import type { BunRequest, Server } from 'bun';
+import { buildContext } from '../buildContext';
 import type {
+  ControllerType,
   IRouter,
   MethodType,
   MiddlewareScopeType,
   MiddlewareType,
 } from '../types';
-import { handleRoute } from './handleRoute';
+import { buildErrorResponse, handleRoute } from './handleRoute';
 
 export const parseRoutes = async (
   router: IRouter,
-  config?: { middlewares?: Record<MiddlewareScopeType, MiddlewareType[]> },
+  config?: {
+    middlewares?: Partial<Record<MiddlewareScopeType, MiddlewareType[]>>;
+    errorController?: ControllerType;
+  },
 ) => {
   const result: Record<
     string,
@@ -30,13 +35,26 @@ export const parseRoutes = async (
       result[path][route.method] = async (
         request: BunRequest,
         server: Server,
-      ) =>
-        await handleRoute({
+      ) => {
+        const context = await buildContext({
           request,
           server,
-          route,
-          middlewares: config?.middlewares,
+          route: route,
         });
+
+        try {
+          return await handleRoute({
+            context,
+            middlewares: config?.middlewares,
+          });
+        } catch (error: any) {
+          return await buildErrorResponse({
+            error,
+            context,
+            errorController: config?.errorController,
+          });
+        }
+      };
     }
   }
 

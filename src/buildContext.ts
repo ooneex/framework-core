@@ -36,7 +36,6 @@ export const buildContext = async (config: {
     state: {},
     request: request,
     response: response,
-    exception: null,
     params: request.params,
     payload: request.payload,
     queries: request.queries,
