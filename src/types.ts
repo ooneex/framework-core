@@ -1,5 +1,6 @@
 import type { BunRequest, CookieMap } from 'bun';
 import type { BunFile, S3File, S3Options } from 'bun';
+import type { JWTHeaderParameters } from 'jose';
 import type { EContainerScope, EMiddlewareScope, EScope, Env } from './enums';
 import type { Exception } from './exceptions/Exception';
 import type { HEADERS } from './headers';
@@ -391,3 +392,30 @@ export type IsFileOptionsType = {
   isXml?: boolean;
   isHtml?: boolean;
 };
+
+export type JwtExpiresInType =
+  | `${number}s`
+  | `${number}m`
+  | `${number}h`
+  | `${number}d`
+  | `${number}w`
+  | `${number}y`;
+
+export type JwtDefaultPayloadType = {
+  iss?: string;
+  sub?: string;
+  aud?: string | string[];
+  jti?: string;
+  nbf?: number | string | Date;
+  exp?: number | JwtExpiresInType | Date;
+  iat?: number | string | Date;
+};
+
+export type JwtPayloadType = JwtDefaultPayloadType & Record<string, unknown>;
+
+export interface IJwt {
+  getPayload: (token?: string) => JwtPayloadType;
+  getHeader: (token?: string) => JWTHeaderParameters;
+  isValid: (token?: string) => Promise<boolean> | boolean;
+  getSecret: () => string;
+}

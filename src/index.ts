@@ -40,6 +40,7 @@ export { HttpRequest } from './HttpRequest';
 export { HttpResponse } from './HttpResponse';
 export { Router, router } from './router/Router';
 export { Url } from './Url';
+export { Jwt } from './Jwt';
 export { AbstractStorage } from './AbstractStorage';
 export { RequestFile } from './RequestFile';
 export { parseEnvVars } from './utils/parseEnvVars';
