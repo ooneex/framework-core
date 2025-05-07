@@ -11,7 +11,6 @@ import {
 } from '@';
 import { handleRoute } from '../../src/router/handleRoute';
 
-// Mock classes and helpers for testing
 class MockHttpRequest {
   public path: string;
   public method: string;
@@ -86,7 +85,6 @@ describe('router - additional coverage', () => {
     controller: TestController,
   };
 
-  // Test for lines 38-39: Controller route middleware intercepting the response
   it('should return response from controller middleware', async () => {
     @middleware()
     class RouteMiddleware {
@@ -116,7 +114,39 @@ describe('router - additional coverage', () => {
     });
   });
 
-  // Test for lines 44-48: Passing role validation
+  it('should modify context when middleware returns context object', async () => {
+    @middleware()
+    class ContextModifierMiddleware {
+      public next(context: ContextType): ContextType {
+        return {
+          ...context,
+          state: {
+            ...context.state,
+            middlewareWasHere: true,
+          },
+        };
+      }
+    }
+
+    const routeWithMiddleware = {
+      ...route,
+      middlewares: {
+        request: [ContextModifierMiddleware],
+      },
+    };
+
+    const request = new MockHttpRequest({});
+    const context = request.build({
+      route: routeWithMiddleware,
+      response: new HttpResponse(),
+    });
+
+    const response = await handleRoute({ context });
+    expect(response).toBeInstanceOf(Response);
+    const responseData = await response.json();
+    expect(responseData.data).toEqual({ message: 'Hello, World!' });
+  });
+
   it('should pass role validation when user has the required role', async () => {
     const routeWithRoles = {
       ...route,
@@ -138,7 +168,6 @@ describe('router - additional coverage', () => {
     expect(responseData.data).toEqual({ message: 'Hello, World!' });
   });
 
-  // Test for lines 61-62: Payload validator
   it('should validate payload successfully', async () => {
     class TestPayloadValidator {
       @Assert.IsString()
@@ -169,7 +198,6 @@ describe('router - additional coverage', () => {
     expect(responseData.data).toEqual({ message: 'Hello, World!' });
   });
 
-  // Test for lines 86-88, 90-97: Response validation and middleware chain
   it('should validate response and apply response middleware chain', async () => {
     class ResponseModel {
       @Assert.IsString()
@@ -236,7 +264,82 @@ describe('router - additional coverage', () => {
     expect(responseData.data.globalMiddleware).toBe(true);
   });
 
-  // Test for lines 86-88: Response validation failure
+  it('should return response from global middleware', async () => {
+    @middleware()
+    class GlobalResponseMiddleware {
+      public next({ response }: ContextType): IResponse {
+        return response.json({ message: 'global middleware response' });
+      }
+    }
+
+    const request = new MockHttpRequest({});
+    const context = request.build({
+      route,
+      response: new HttpResponse(),
+    });
+
+    const response = await handleRoute({
+      context,
+      middlewares: {
+        request: [GlobalResponseMiddleware],
+      },
+    });
+
+    expect(response).toBeInstanceOf(Response);
+    const responseData = await response.json();
+    expect(responseData.data).toEqual({
+      message: 'global middleware response',
+    });
+  });
+
+  it('should run all global request middlewares in sequence', async () => {
+    @middleware()
+    class FirstMiddleware {
+      public next(context: ContextType): ContextType {
+        return {
+          ...context,
+          state: {
+            ...context.state,
+            firstMiddlewareRan: true,
+          },
+        };
+      }
+    }
+
+    @middleware()
+    class SecondMiddleware {
+      public next(context: ContextType): ContextType {
+        expect(context.state.firstMiddlewareRan).toBe(true);
+
+        return {
+          ...context,
+          state: {
+            ...context.state,
+            secondMiddlewareRan: true,
+          },
+        };
+      }
+    }
+
+    const request = new MockHttpRequest({});
+    const context = request.build({
+      route,
+      response: new HttpResponse(),
+      state: {},
+    });
+
+    const response = await handleRoute({
+      context,
+      middlewares: {
+        request: [FirstMiddleware, SecondMiddleware],
+      },
+    });
+
+    expect(response).toBeInstanceOf(Response);
+    const responseData = await response.json();
+    expect(responseData.data).toEqual({ message: 'Hello, World!' });
+  });
+
   it('should throw when response validation fails', async () => {
     class ResponseModel {
       @Assert.IsNumber()
