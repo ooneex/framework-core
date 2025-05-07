@@ -190,6 +190,11 @@ export interface IResponse {
   isError: () => boolean;
 }
 
+export type StorageType = {
+  // biome-ignore lint/complexity/noBannedTypes: trust me
+  new (...args: any[]): {};
+};
+
 export interface IStorage {
   exists(key: string): Promise<boolean>;
   delete(key: string): Promise<void>;

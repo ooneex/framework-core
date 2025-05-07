@@ -11,6 +11,7 @@ export { mailer } from './decorators/mailer';
 export { middleware } from './decorators/middleware';
 export { service } from './decorators/service';
 export { validator } from './decorators/validator';
+export { storage } from './decorators/storage';
 export { Route } from './decorators/route';
 
 export { App } from './App';
@@ -29,6 +30,7 @@ export { ValidatorDecoratorException } from './exceptions/ValidatorDecoratorExce
 export { ControllerDecoratorException } from './exceptions/ControllerDecoratorException';
 export { UnauthorizedException } from './exceptions/UnauthorizedException';
 export { ValidationException } from './exceptions/ValidationException';
+export { StorageDecoratorException } from './exceptions/StorageDecoratorException';
 export { Header } from './header/Header';
 export { HeaderChecker } from './header/HeaderChecker';
 export { ReadonlyHeader } from './header/ReadonlyHeader';
