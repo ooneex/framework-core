@@ -8,7 +8,7 @@ describe('Exception', () => {
 
     expect(exception).toBeInstanceOf(Exception);
     expect(exception.message).toBe(errorMessage);
-    expect(exception.status).toBeNull();
+    expect(exception.status).toBeUndefined();
     expect(exception.data).toBeNull();
     expect(exception.date).toBeInstanceOf(Date);
   });
@@ -20,7 +20,7 @@ describe('Exception', () => {
 
     expect(exception).toBeInstanceOf(Exception);
     expect(exception.message).toBe(errorMessage);
-    expect(exception.status).toBeNull();
+    expect(exception.status).toBeUndefined();
     expect(exception.data).toBeNull();
   });
 
@@ -35,7 +35,7 @@ describe('Exception', () => {
   it('should create Exception with additional data', () => {
     const errorMessage = 'Test error message';
     const data = { key: 'value' };
-    const exception = new Exception(errorMessage, null, data);
+    const exception = new Exception(errorMessage, undefined, data);
 
     expect(exception.data).toEqual(data);
   });

@@ -1,6 +1,8 @@
 import { describe, expect, it } from 'bun:test';
 import {
   type ContextType,
+  HttpRequest,
+  HttpResponse,
   type IResponse,
   type RouteConfigType,
   container,
@@ -59,9 +61,27 @@ describe('router', () => {
         }
 
         const response = await handleRoute({
-          request: new BRequest('http://localhost:3000/test?foo=bar&baz=123'),
-          route,
-          ip: '127.0.0.1',
+          // @ts-ignore
+          context: {
+            request: new HttpRequest(
+              new BRequest('http://localhost:3000/test?foo=bar&baz=123'),
+              { ip: '' },
+            ),
+            route,
+            ip: '127.0.0.1',
+            host: 'localhost',
+            path: '/test',
+            method: 'GET',
+            params: {},
+            payload: {},
+            queries: {},
+            files: {},
+            cookies: null,
+            form: null,
+            language: { code: 'en', region: 'US' },
+            state: {},
+            response: new HttpResponse(),
+          },
           middlewares: { request: [TestHandleRouteMiddleware] },
         });
 
