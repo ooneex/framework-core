@@ -1,6 +1,7 @@
 import { describe, expect, it } from 'bun:test';
 import {
   type ContextType,
+  Exception,
   HttpRequest,
   HttpResponse,
   type IResponse,
@@ -9,7 +10,7 @@ import {
   middleware,
 } from '@';
 import { CookieMap, type RouterTypes } from 'bun';
-import { handleRoute } from '../../src/router/handleRoute';
+import { buildErrorResponse, handleRoute } from '../../src/router/handleRoute';
 
 describe('router', () => {
   class BRequest extends Request {
@@ -90,6 +91,122 @@ describe('router', () => {
           message: 'global request middleware',
         });
       });
+    });
+  });
+
+  describe('buildErrorResponse', () => {
+    it('should handle an exception and return a response', async () => {
+      // @ts-ignore: trust me
+      const context: ContextType = {
+        request: new HttpRequest(new BRequest('http://localhost:3000/test'), {
+          ip: '',
+        }),
+        route,
+        ip: '127.0.0.1',
+        host: 'localhost',
+        path: '/test',
+        method: 'GET',
+        params: {},
+        payload: {},
+        queries: {},
+        files: {},
+        cookies: null,
+        form: null,
+        language: { code: 'en', region: 'US' },
+        state: {},
+        response: new HttpResponse(),
+      };
+
+      const error = new Error('Test error');
+      const response = await buildErrorResponse({
+        error,
+        context,
+      });
+
+      expect(response).toBeInstanceOf(Response);
+      const responseData = await response.json();
+      expect(responseData.success).toBe(false);
+      expect(responseData.message).toBe('Test error');
+    });
+
+    it('should use an existing Exception if provided', async () => {
+      // @ts-ignore: trust me
+      const context: ContextType = {
+        request: new HttpRequest(new BRequest('http://localhost:3000/test'), {
+          ip: '',
+        }),
+        route,
+        ip: '127.0.0.1',
+        host: 'localhost',
+        path: '/test',
+        method: 'GET',
+        params: {},
+        payload: {},
+        queries: {},
+        files: {},
+        cookies: null,
+        form: null,
+        language: { code: 'en', region: 'US' },
+        state: {},
+        response: new HttpResponse(),
+      };
+
+      const customError = new Exception('Custom exception', 400, {
+        customData: 'test',
+      });
+      const response = await buildErrorResponse({
+        error: customError,
+        context,
+      });
+
+      expect(response).toBeInstanceOf(Response);
+      const responseData = await response.json();
+      expect(responseData.success).toBe(false);
+      expect(responseData.message).toBe('Custom exception');
+      expect(responseData.data).toEqual({ customData: 'test' });
+      expect(responseData.status).toBe(400);
+    });
+
+    it('should use error controller if provided', async () => {
+      class TestErrorController {
+        public action({ response }: ContextType): IResponse {
+          return response.json({ customErrorHandler: true });
+        }
+      }
+
+      container.bind(TestErrorController).toSelf().inSingletonScope();
+
+      // @ts-ignore: trust me
+      const context: ContextType = {
+        request: new HttpRequest(new BRequest('http://localhost:3000/test'), {
+          ip: '',
+        }),
+        route,
+        ip: '127.0.0.1',
+        host: 'localhost',
+        path: '/test',
+        method: 'GET',
+        params: {},
+        payload: {},
+        queries: {},
+        files: {},
+        cookies: null,
+        form: null,
+        language: { code: 'en', region: 'US' },
+        state: {},
+        response: new HttpResponse(),
+      };
+
+      const error = new Error('Test error');
+      const response = await buildErrorResponse({
+        error,
+        errorController: TestErrorController,
+        context,
+      });
+
+      expect(response).toBeInstanceOf(Response);
+      const responseData = await response.json();
+      expect(responseData.data).toEqual({ customErrorHandler: true });
     });
   });
 });
