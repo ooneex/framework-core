@@ -1,6 +1,6 @@
 import { beforeEach, describe, expect, it, spyOn } from 'bun:test';
 import { AbstractStorage } from '@';
-import { S3Client, type S3Options, type S3File } from 'bun';
+import { S3Client, type S3File, type S3Options } from 'bun';
 
 class TestStorage extends AbstractStorage {
   public getOptions(): S3Options {
@@ -53,15 +53,17 @@ describe('Storage', () => {
   it('should put a file from local path', async () => {
     const mockBunFile = { size: 1024 } as Bun.BunFile;
     const fileSpy = spyOn(Bun, 'file').mockReturnValue(mockBunFile);
-    
+
     const mockS3File = {
-      write: () => Promise.resolve(1024)
+      write: () => Promise.resolve(1024),
     } as unknown as S3File;
-    
-    const fileMockSpy = spyOn(S3Client.prototype, 'file').mockReturnValue(mockS3File);
-    
+
+    const fileMockSpy = spyOn(S3Client.prototype, 'file').mockReturnValue(
+      mockS3File,
+    );
+
     const size = await storage.putFile('test.txt', '/local/path/test.txt');
-    
+
     expect(size).toBe(1024);
     expect(fileSpy).toHaveBeenCalledWith('/local/path/test.txt');
     expect(fileMockSpy).toHaveBeenCalledWith('test.txt');
@@ -69,63 +71,71 @@ describe('Storage', () => {
 
   it('should put content to s3', async () => {
     const content = 'test content';
-    
+
     const mockS3File = {
       write: (data: any) => {
         expect(data).toBe(content);
         return Promise.resolve(content.length);
-      }
+      },
     } as unknown as S3File;
-    
-    const fileMockSpy = spyOn(S3Client.prototype, 'file').mockReturnValue(mockS3File);
-    
+
+    const fileMockSpy = spyOn(S3Client.prototype, 'file').mockReturnValue(
+      mockS3File,
+    );
+
     const size = await storage.put('test.txt', content);
-    
+
     expect(size).toBe(content.length);
     expect(fileMockSpy).toHaveBeenCalledWith('test.txt');
   });
 
   it('should get content as JSON', async () => {
     const testData = { name: 'test', value: 123 };
-    
+
     const mockS3File = {
-      json: () => Promise.resolve(testData)
+      json: () => Promise.resolve(testData),
     } as unknown as S3File;
-    
-    const fileMockSpy = spyOn(S3Client.prototype, 'file').mockReturnValue(mockS3File);
-    
+
+    const fileMockSpy = spyOn(S3Client.prototype, 'file').mockReturnValue(
+      mockS3File,
+    );
+
     const data = await storage.getAsJson('test.json');
-    
+
     expect(data).toEqual(testData);
     expect(fileMockSpy).toHaveBeenCalledWith('test.json');
   });
 
   it('should get content as ArrayBuffer', async () => {
     const buffer = new ArrayBuffer(8);
-    
+
     const mockS3File = {
-      arrayBuffer: () => Promise.resolve(buffer)
+      arrayBuffer: () => Promise.resolve(buffer),
     } as unknown as S3File;
-    
-    const fileMockSpy = spyOn(S3Client.prototype, 'file').mockReturnValue(mockS3File);
-    
+
+    const fileMockSpy = spyOn(S3Client.prototype, 'file').mockReturnValue(
+      mockS3File,
+    );
+
     const result = await storage.getAsArrayBuffer('test.bin');
-    
+
     expect(result).toBe(buffer);
     expect(fileMockSpy).toHaveBeenCalledWith('test.bin');
   });
 
   it('should get content as stream', () => {
     const mockStream = new ReadableStream();
-    
+
     const mockS3File = {
-      stream: () => mockStream
+      stream: () => mockStream,
     } as unknown as S3File;
-    
-    const fileMockSpy = spyOn(S3Client.prototype, 'file').mockReturnValue(mockS3File);
-    
+
+    const fileMockSpy = spyOn(S3Client.prototype, 'file').mockReturnValue(
+      mockS3File,
+    );
+
     const stream = storage.getAsStream('test.bin');
-    
+
     expect(stream).toBe(mockStream);
     expect(fileMockSpy).toHaveBeenCalledWith('test.bin');
   });
