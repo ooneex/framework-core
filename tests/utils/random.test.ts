@@ -12,6 +12,16 @@ describe('random', () => {
     });
   });
 
+  describe('uuidv7', () => {
+    it('should generate a valid UUIDv7', () => {
+      const uuid = random.uuidv7();
+      expect(typeof uuid).toBe('string');
+      expect(uuid).toMatch(
+        /^[0-9a-f]{8}-[0-9a-f]{4}-7[0-9a-f]{3}-[89ab][0-9a-f]{3}-[0-9a-f]{12}$/i,
+      );
+    });
+  });
+
   describe('nanoid', () => {
     it('should generate a string with default length of 10', () => {
       const id = random.nanoid();
