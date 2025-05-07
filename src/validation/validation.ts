@@ -20,9 +20,7 @@ export const Validation = {
   },
 };
 
-export type ValidationType = {
-  IConstraint: ValidatorConstraintInterface;
-  Error: ValidationError;
-  Options: ValidationOptions;
-  Arguments: ValidationArguments;
-};
+export interface IValidatorConstraint extends ValidatorConstraintInterface {}
+export type ValidationErrorType = ValidationError;
+export type ValidationOptionsType = ValidationOptions;
+export type ValidationArgumentsType = ValidationArguments;

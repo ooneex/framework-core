@@ -2,7 +2,7 @@ export * from './types';
 export * from './status';
 export * from './locales';
 
-export { Validation, type ValidationType } from './validation/validation';
+export * from './validation/validation';
 export { Assert } from './validation/assert';
 
 export { config } from './decorators/config';
