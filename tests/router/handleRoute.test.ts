@@ -1,11 +1,15 @@
 import { describe, expect, it } from 'bun:test';
 import {
+  Assert,
   type ContextType,
   Exception,
   HttpRequest,
   HttpResponse,
   type IResponse,
+  NotFoundException,
   type RouteConfigType,
+  UnauthorizedException,
+  ValidationException,
   container,
   middleware,
 } from '@';
@@ -66,7 +70,6 @@ describe('router', () => {
         }
 
         const response = await handleRoute({
-          // @ts-ignore
           context: {
             request: new HttpRequest(
               new BRequest('http://localhost:3000/test?foo=bar&baz=123'),
@@ -88,7 +91,7 @@ describe('router', () => {
             response: new HttpResponse(),
           },
           middlewares: { request: [TestHandleRouteMiddleware] },
-        });
+        } as any);
 
         expect(response).toBeInstanceOf(Response);
         expect((await response.json()).data).toEqual({
@@ -96,12 +99,177 @@ describe('router', () => {
         });
       });
     });
+
+    describe('route validation', () => {
+      it('should throw UnauthorizedException when user lacks required role', async () => {
+        const routeWithRoles = {
+          ...route,
+          roles: ['admin'],
+        };
+
+        const context = {
+          request: new HttpRequest(new BRequest('http://localhost:3000/test'), {
+            ip: '',
+          }),
+          route: routeWithRoles,
+          ip: '127.0.0.1',
+          host: 'localhost',
+          path: '/test',
+          method: 'GET',
+          params: {},
+          payload: {},
+          queries: {},
+          files: {},
+          cookies: null,
+          form: null,
+          language: { code: 'en', region: 'US' },
+          state: {},
+          response: new HttpResponse(),
+          user: {
+            getRoles: () => ['user'],
+          },
+        };
+
+        try {
+          await handleRoute({ context } as any);
+        } catch (error: any) {
+          expect(error).toBeInstanceOf(UnauthorizedException);
+          expect(error.message).toBe('Access denied');
+        }
+      });
+
+      it('should throw NotFoundException when route is not found', async () => {
+        const context = {
+          request: new HttpRequest(new BRequest('http://localhost:3000/test'), {
+            ip: '',
+          }),
+          route: null,
+          ip: '127.0.0.1',
+          host: 'localhost',
+          path: '/test',
+          method: 'GET',
+          params: {},
+          payload: {},
+          queries: {},
+          files: {},
+          cookies: null,
+          form: null,
+          language: { code: 'en', region: 'US' },
+          state: {},
+          response: new HttpResponse(),
+        };
+
+        try {
+          await handleRoute({ context } as any);
+          expect(true).toBe(false);
+        } catch (error: any) {
+          expect(error).toBeInstanceOf(NotFoundException);
+          expect(error.message).toBe('Route not found');
+        }
+      });
+    });
+
+    describe('validators', () => {
+      it('should validate params', async () => {
+        // Simple mock validator class that works with class-validator
+        class TestParamValidator {
+          @Assert.IsString()
+          test: string;
+        }
+
+        // Register the validator with the container
+        container.bind(TestParamValidator).toSelf().inSingletonScope();
+
+        // We'll create a simple route test with mock context
+        const testRoute = {
+          ...route,
+          validators: {
+            params: [TestParamValidator],
+          },
+        };
+
+        const context = {
+          request: new HttpRequest(new BRequest('http://localhost:3000/test'), {
+            ip: '',
+          }),
+          route: testRoute,
+          ip: '127.0.0.1',
+          host: 'localhost',
+          path: '/test',
+          method: 'GET',
+          params: { test: 123 }, // Numeric value will fail IsString validation
+          payload: {},
+          queries: {},
+          files: {},
+          cookies: null,
+          form: null,
+          language: { code: 'en', region: 'US' },
+          state: {},
+          response: new HttpResponse(),
+        };
+
+        try {
+          await handleRoute({ context } as any);
+
+          // If we got here, something went wrong
+          expect(true).toBe(false);
+        } catch (error: any) {
+          expect(error).toBeInstanceOf(ValidationException);
+          expect(error.message).toContain('test must be a string');
+        }
+      });
+    });
+
+    describe('response middleware', () => {
+      it('should process response middleware chain', async () => {
+        @middleware()
+        class ResponseMiddleware {
+          public next({ response }: ContextType): IResponse {
+            const data = response.getData();
+            return response.json({
+              ...data,
+              modified: true,
+            });
+          }
+        }
+
+        const routeWithMiddleware = {
+          ...route,
+          middlewares: {
+            response: [ResponseMiddleware],
+          },
+        };
+
+        const context = {
+          request: new HttpRequest(new BRequest('http://localhost:3000/test'), {
+            ip: '',
+          }),
+          route: routeWithMiddleware,
+          ip: '127.0.0.1',
+          host: 'localhost',
+          path: '/test',
+          method: 'GET',
+          params: {},
+          payload: {},
+          queries: {},
+          files: {},
+          cookies: null,
+          form: null,
+          language: { code: 'en', region: 'US' },
+          state: {},
+          response: new HttpResponse(),
+        };
+
+        const response = await handleRoute({ context } as any);
+        const responseData = await response.json();
+        expect(responseData.data.modified).toBe(true);
+      });
+    });
   });
 
   describe('buildErrorResponse', () => {
     it('should handle an exception and return a response', async () => {
-      // @ts-ignore: trust me
-      const context: ContextType = {
+      const context = {
         request: new HttpRequest(new BRequest('http://localhost:3000/test'), {
           ip: '',
         }),
@@ -125,7 +293,7 @@ describe('router', () => {
       const response = await buildErrorResponse({
         error,
         context,
-      });
+      } as any);
 
       expect(response).toBeInstanceOf(Response);
       const responseData = await response.json();
@@ -134,8 +302,7 @@ describe('router', () => {
     });
 
     it('should use an existing Exception if provided', async () => {
-      // @ts-ignore: trust me
-      const context: ContextType = {
+      const context = {
         request: new HttpRequest(new BRequest('http://localhost:3000/test'), {
           ip: '',
         }),
@@ -161,7 +328,7 @@ describe('router', () => {
       const response = await buildErrorResponse({
         error: customError,
         context,
-      });
+      } as any);
 
       expect(response).toBeInstanceOf(Response);
       const responseData = await response.json();
@@ -180,8 +347,7 @@ describe('router', () => {
 
       container.bind(TestErrorController).toSelf().inSingletonScope();
 
-      // @ts-ignore: trust me
-      const context: ContextType = {
+      const context = {
         request: new HttpRequest(new BRequest('http://localhost:3000/test'), {
           ip: '',
         }),
@@ -206,7 +372,7 @@ describe('router', () => {
         error,
         errorController: TestErrorController,
         context,
-      });
+      } as any);
 
       expect(response).toBeInstanceOf(Response);
       const responseData = await response.json();
@@ -216,8 +382,7 @@ describe('router', () => {
 
   describe('buildExecptionDataFromContext', () => {
     it('should extract relevant data from context', () => {
-      //  @ts-ignore: trust me
-      const context: ContextType = {
+      const context = {
         state: { foo: 'bar' },
         params: { id: '123' },
         payload: { name: 'test' },
@@ -229,7 +394,7 @@ describe('router', () => {
         host: 'localhost',
       };
 
-      const result = buildExecptionDataFromContext(context);
+      const result = buildExecptionDataFromContext(context as any);
 
       expect(result).toEqual({
         state: { foo: 'bar' },

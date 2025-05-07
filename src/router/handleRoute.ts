@@ -108,9 +108,7 @@ export const runMiddleware = async (
   if (response instanceof HttpResponse) {
     return response;
   }
-  context = response as ContextType;
-
-  return context;
+  return response as ContextType;
 };
 
 export const runValidators = async (
