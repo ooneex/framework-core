@@ -4,25 +4,16 @@ import { StorageDecoratorException, container, inject, storage } from '@';
 describe('Storage Decorator', () => {
   it('should register a valid storage class in the container', () => {
     @storage()
-    class TestStorage {
-      public beforeValidation(data: any): Promise<any> | any {
-        return data;
-      }
-    }
+    class TestStorage {}
 
     const instance = container.get<TestStorage>(TestStorage);
     expect(instance).toBeDefined();
     expect(instance).toBeInstanceOf(TestStorage);
-    expect(instance.beforeValidation).toBeFunction();
   });
 
   it('should register storage class with transient scope', () => {
     @storage('transient')
-    class TransientScopedStorage {
-      public beforeValidation(data: any): Promise<any> | any {
-        return data;
-      }
-    }
+    class TransientScopedStorage {}
 
     const instance1 = container.get<TransientScopedStorage>(
       TransientScopedStorage,
@@ -37,11 +28,7 @@ describe('Storage Decorator', () => {
 
   it('should register storage class with request scope', () => {
     @storage('request')
-    class RequestScopedStorage {
-      public beforeValidation(data: any): Promise<any> | any {
-        return data;
-      }
-    }
+    class RequestScopedStorage {}
 
     const instance1 = container.get<RequestScopedStorage>(RequestScopedStorage);
     const instance2 = container.get<RequestScopedStorage>(RequestScopedStorage);
@@ -52,11 +39,7 @@ describe('Storage Decorator', () => {
 
   it('should register storage class with singleton scope by default', () => {
     @storage()
-    class SingletonScopedStorage {
-      public beforeValidation(data: any): Promise<any> | any {
-        return data;
-      }
-    }
+    class SingletonScopedStorage {}
 
     const instance1 = container.get<SingletonScopedStorage>(
       SingletonScopedStorage,
@@ -88,11 +71,7 @@ describe('Storage Decorator', () => {
 
   it('should properly inject dependencies in storage classes', () => {
     @storage()
-    class DependencyStorage {
-      public beforeValidation(data: any): Promise<any> | any {
-        return data;
-      }
-    }
+    class DependencyStorage {}
 
     @storage()
     class InjectedStorage {
@@ -100,10 +79,6 @@ describe('Storage Decorator', () => {
         @inject(DependencyStorage)
         public dependency: DependencyStorage,
       ) {}
-
-      public beforeValidation(data: any): Promise<any> | any {
-        return data;
-      }
     }
 
     const instance = container.get<InjectedStorage>(InjectedStorage);
