@@ -10,7 +10,11 @@ import {
   middleware,
 } from '@';
 import { CookieMap, type RouterTypes } from 'bun';
-import { buildErrorResponse, handleRoute } from '../../src/router/handleRoute';
+import {
+  buildErrorResponse,
+  buildExecptionDataFromContext,
+  handleRoute,
+} from '../../src/router/handleRoute';
 
 describe('router', () => {
   class BRequest extends Request {
@@ -207,6 +211,37 @@ describe('router', () => {
       expect(response).toBeInstanceOf(Response);
       const responseData = await response.json();
       expect(responseData.data).toEqual({ customErrorHandler: true });
+    });
+  });
+
+  describe('buildExecptionDataFromContext', () => {
+    it('should extract relevant data from context', () => {
+      //  @ts-ignore: trust me
+      const context: ContextType = {
+        state: { foo: 'bar' },
+        params: { id: '123' },
+        payload: { name: 'test' },
+        queries: { filter: 'active' },
+        language: { code: 'en', region: 'US' },
+        path: '/test/123',
+        method: 'POST',
+        ip: '127.0.0.1',
+        host: 'localhost',
+      };
+
+      const result = buildExecptionDataFromContext(context);
+
+      expect(result).toEqual({
+        state: { foo: 'bar' },
+        params: { id: '123' },
+        payload: { name: 'test' },
+        queries: { filter: 'active' },
+        language: { code: 'en', region: 'US' },
+        path: '/test/123',
+        method: 'POST',
+        ip: '127.0.0.1',
+        host: 'localhost',
+      });
     });
   });
 });
