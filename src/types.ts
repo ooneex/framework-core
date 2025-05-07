@@ -114,6 +114,7 @@ export interface IRequest {
   readonly queries: Record<string, ScalarType>;
   readonly cookies: CookieMap;
   readonly form: FormData | null;
+  readonly files: Record<string, IRequestFile>;
   readonly ip: string;
   readonly host: string;
   readonly referer: string | null;
