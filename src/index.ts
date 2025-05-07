@@ -31,6 +31,7 @@ export { ControllerDecoratorException } from './exceptions/ControllerDecoratorEx
 export { UnauthorizedException } from './exceptions/UnauthorizedException';
 export { ValidationException } from './exceptions/ValidationException';
 export { StorageDecoratorException } from './exceptions/StorageDecoratorException';
+export { RepositoryDecoratorException } from './exceptions/RepositoryDecoratorException';
 export { Header } from './header/Header';
 export { HeaderChecker } from './header/HeaderChecker';
 export { ReadonlyHeader } from './header/ReadonlyHeader';
