@@ -82,8 +82,8 @@ export class App {
       routes,
       fetch: async (req, server) => {
         class BRequest extends Request {
-          params: RouterTypes.ExtractRouteParams<unknown>;
-          readonly cookies: CookieMap;
+          params: RouterTypes.ExtractRouteParams<unknown> = {};
+          readonly cookies: CookieMap = new CookieMap();
 
           constructor(
             input: RequestInfo | URL,

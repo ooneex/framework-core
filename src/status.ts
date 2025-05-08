@@ -1,4 +1,4 @@
-import type { StatusCodeType } from './types.ts';
+import type { StatusCodeType } from './types';
 
 export const STATUS_CODE = {
   Continue: 100,
