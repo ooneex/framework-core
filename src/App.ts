@@ -15,6 +15,7 @@ import type {
   IRouter,
   MiddlewareScopeType,
   MiddlewareType,
+  ModelType,
   ValidationScopeType,
   ValidatorType,
 } from './types';
@@ -37,7 +38,7 @@ export class App {
     port?: number;
     hostname?: string;
     validators?: Partial<
-      Record<Extract<ValidationScopeType, 'env'>, ValidatorType[]>
+      Record<Extract<ValidationScopeType, 'env'>, (ValidatorType | ModelType)[]>
     >;
     middlewares?: Partial<Record<MiddlewareScopeType, MiddlewareType[]>>;
     router?: IRouter;

@@ -46,7 +46,9 @@ export type RouteConfigType = {
   name?: string;
   path: `/${string}`;
   method: MethodType;
-  validators?: Partial<Record<ValidationScopeType, ValidatorType[]>>;
+  validators?: Partial<
+    Record<ValidationScopeType, (ValidatorType | ModelType)[]>
+  >;
   middlewares?: Partial<Record<MiddlewareScopeType, MiddlewareType[]>>;
   roles?: string[];
   controller: ControllerType;
@@ -286,12 +288,9 @@ export type ValidatorType = {
   new (...args: any[]): {};
 };
 
-export type RoleType = {
-  new (
-    ...args: any[]
-  ): {
-    getRoles: () => string[];
-  };
+export type ModelType = {
+  // biome-ignore lint/complexity/noBannedTypes: trust me
+  new (...args: any[]): {};
 };
 
 export interface IUser {

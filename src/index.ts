@@ -13,6 +13,7 @@ export { service } from './decorators/service';
 export { validator } from './decorators/validator';
 export { storage } from './decorators/storage';
 export { repository } from './decorators/repository';
+export { model } from './decorators/model';
 export { Route } from './decorators/route';
 
 export { App } from './App';
@@ -33,6 +34,7 @@ export { UnauthorizedException } from './exceptions/UnauthorizedException';
 export { ValidationException } from './exceptions/ValidationException';
 export { StorageDecoratorException } from './exceptions/StorageDecoratorException';
 export { RepositoryDecoratorException } from './exceptions/RepositoryDecoratorException';
+export { ModelDecoratorException } from './exceptions/ModelDecoratorException';
 export { Header } from './header/Header';
 export { HeaderChecker } from './header/HeaderChecker';
 export { ReadonlyHeader } from './header/ReadonlyHeader';

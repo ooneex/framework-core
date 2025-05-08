@@ -4,25 +4,16 @@ import { ValidatorDecoratorException, container, inject, validator } from '@';
 describe('Validator Decorator', () => {
   it('should register a valid validator class in the container', () => {
     @validator()
-    class TestValidator {
-      public beforeValidation(data: any): Promise<any> | any {
-        return data;
-      }
-    }
+    class TestValidator {}
 
     const instance = container.get<TestValidator>(TestValidator);
     expect(instance).toBeDefined();
     expect(instance).toBeInstanceOf(TestValidator);
-    expect(instance.beforeValidation).toBeFunction();
   });
 
   it('should register validator class with transient scope', () => {
     @validator('transient')
-    class TransientScopedValidator {
-      public beforeValidation(data: any): Promise<any> | any {
-        return data;
-      }
-    }
+    class TransientScopedValidator {}
 
     const instance1 = container.get<TransientScopedValidator>(
       TransientScopedValidator,
@@ -37,11 +28,7 @@ describe('Validator Decorator', () => {
 
   it('should register validator class with request scope', () => {
     @validator('request')
-    class RequestScopedValidator {
-      public beforeValidation(data: any): Promise<any> | any {
-        return data;
-      }
-    }
+    class RequestScopedValidator {}
 
     const instance1 = container.get<RequestScopedValidator>(
       RequestScopedValidator,
@@ -56,11 +43,7 @@ describe('Validator Decorator', () => {
 
   it('should register validator class with singleton scope by default', () => {
     @validator()
-    class SingletonScopedValidator {
-      public beforeValidation(data: any): Promise<any> | any {
-        return data;
-      }
-    }
+    class SingletonScopedValidator {}
 
     const instance1 = container.get<SingletonScopedValidator>(
       SingletonScopedValidator,
@@ -77,11 +60,7 @@ describe('Validator Decorator', () => {
     const callback = () => {
       @validator()
       // biome-ignore lint/correctness/noUnusedVariables: trust me
-      class InvalidClass {
-        public beforeValidation(data: any): Promise<any> | any {
-          return data;
-        }
-      }
+      class InvalidClass {}
     };
 
     expect(callback).toThrow(
@@ -92,11 +71,7 @@ describe('Validator Decorator', () => {
 
   it('should properly inject dependencies in validator classes', () => {
     @validator()
-    class DependencyValidator {
-      public beforeValidation(data: any): Promise<any> | any {
-        return data;
-      }
-    }
+    class DependencyValidator {}
 
     @validator()
     class InjectedValidator {
@@ -104,10 +79,6 @@ describe('Validator Decorator', () => {
         @inject(DependencyValidator)
         public dependency: DependencyValidator,
       ) {}
-
-      public beforeValidation(data: any): Promise<any> | any {
-        return data;
-      }
     }
 
     const instance = container.get<InjectedValidator>(InjectedValidator);

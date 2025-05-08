@@ -12,6 +12,7 @@ import type {
   IResponse,
   MiddlewareScopeType,
   MiddlewareType,
+  ModelType,
   ValidationResultType,
   ValidatorType,
 } from '../types';
@@ -112,7 +113,7 @@ export const runMiddleware = async (
 };
 
 export const runValidators = async (
-  validators: ValidatorType[],
+  validators: (ValidatorType | ModelType)[],
   data: Record<string, any>,
 ): Promise<void> => {
   for (const validator of validators) {

@@ -6,17 +6,23 @@ import type {
   DatabaseType,
   MailerType,
   MiddlewareType,
+  ModelType,
+  RepositoryType,
   ServiceType,
+  StorageType,
   ValidatorType,
 } from '../types';
 
 export const registerWithScope = (
   target:
     | ConfigType
-    | ServiceType
     | DatabaseType
     | MailerType
     | MiddlewareType
+    | ModelType
+    | RepositoryType
+    | ServiceType
+    | StorageType
     | ValidatorType,
   scope: ContainerScopeType = EContainerScope.Singleton,
 ) => {
