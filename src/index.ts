@@ -9,11 +9,11 @@ export { config } from './decorators/config';
 export { database } from './decorators/database';
 export { mailer } from './decorators/mailer';
 export { middleware } from './decorators/middleware';
-export { service } from './decorators/service';
-export { validator } from './decorators/validator';
-export { storage } from './decorators/storage';
-export { repository } from './decorators/repository';
 export { model } from './decorators/model';
+export { repository } from './decorators/repository';
+export { service } from './decorators/service';
+export { storage } from './decorators/storage';
+export { validator } from './decorators/validator';
 export { Route } from './decorators/route';
 
 export { App } from './App';
