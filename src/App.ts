@@ -22,17 +22,17 @@ import type {
 import { parseEnvVars } from './utils/parseEnvVars';
 
 export class App {
-  public readonly port: number;
-  public readonly hostname: string;
-  public readonly router?: IRouter;
-  public readonly validators?: Partial<
+  private readonly port: number;
+  private readonly hostname: string;
+  private readonly router?: IRouter;
+  private readonly validators?: Partial<
     Record<Extract<ValidationScopeType, 'env'>, ValidatorType[]>
   >;
-  public readonly middlewares?: Partial<
+  private readonly middlewares?: Partial<
     Record<MiddlewareScopeType, MiddlewareType[]>
   >;
-  public readonly notFoundController?: ControllerType;
-  public readonly errorController?: ControllerType;
+  private readonly notFoundController?: ControllerType;
+  private readonly errorController?: ControllerType;
 
   constructor(config?: {
     port?: number;
@@ -80,6 +80,8 @@ export class App {
     });
 
     return Bun.serve({
+      port: this.port,
+      hostname: this.hostname,
       routes,
       fetch: async (req, server) => {
         class BRequest extends Request {

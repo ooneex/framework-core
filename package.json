@@ -3,7 +3,7 @@
   "type": "module",
   "main": "dist/index.js",
   "types": "dist/index.d.ts",
-  "version": "0.0.4",
+  "version": "0.0.5",
   "description": "Core utilities and interfaces for the Ooneex framework",
   "scripts": {
     "test:watch": "bun test tests --watch",
@@ -42,7 +42,7 @@
     "accept-language-parser": "^1.5.0",
     "class-transformer": "^0.5.1",
     "class-validator": "^0.14.2",
-    "inversify": "^7.0.0-alpha.5",
+    "inversify": "^7.5.1",
     "jose": "^6.0.11",
     "nanoid": "^5.1.5",
     "reflect-metadata": "^0.2.2",
