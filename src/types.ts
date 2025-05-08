@@ -241,7 +241,7 @@ export type ControllerType = {
 };
 
 export type ConfigType = {
-  // biome-ignore lint/complexity/noBannedTypes: <explanation>
+  // biome-ignore lint/complexity/noBannedTypes: trust me
   new (...args: any[]): {};
 };
 
@@ -254,12 +254,8 @@ export type ServiceType = {
 };
 
 export type DatabaseType = {
-  new (
-    ...args: any[]
-  ): {
-    open: <T>(...args: any[]) => Promise<T> | T;
-    close: <T>(...args: any[]) => Promise<T> | T;
-  };
+  // biome-ignore lint/complexity/noBannedTypes: trust me
+  new (...args: any[]): {};
 };
 
 export type MailerType = {

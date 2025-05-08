@@ -4,34 +4,16 @@ import { DatabaseDecoratorException, container, database, inject } from '@';
 describe('Database Decorator', () => {
   it('should register a valid database class in the container', () => {
     @database()
-    class TestDatabase {
-      public open<T>(): T {
-        return 'open' as T;
-      }
-
-      public close<T>(): T {
-        return 'close' as T;
-      }
-    }
+    class TestDatabase {}
 
     const instance = container.get<TestDatabase>(TestDatabase);
     expect(instance).toBeDefined();
     expect(instance).toBeInstanceOf(TestDatabase);
-    expect(instance.open<string>()).toBe('open');
-    expect(instance.close<string>()).toBe('close');
   });
 
   it('should register database class with transient scope', () => {
     @database('transient')
-    class TransientScopedDatabase {
-      public open<T>(): T {
-        return 'open' as T;
-      }
-
-      public close<T>(): T {
-        return 'close' as T;
-      }
-    }
+    class TransientScopedDatabase {}
 
     const instance1 = container.get<TransientScopedDatabase>(
       TransientScopedDatabase,
@@ -46,15 +28,7 @@ describe('Database Decorator', () => {
 
   it('should register database class with request scope', () => {
     @database('request')
-    class RequestScopedDatabase {
-      public open<T>(): T {
-        return 'open' as T;
-      }
-
-      public close<T>(): T {
-        return 'close' as T;
-      }
-    }
+    class RequestScopedDatabase {}
 
     const instance1 = container.get<RequestScopedDatabase>(
       RequestScopedDatabase,
@@ -69,15 +43,7 @@ describe('Database Decorator', () => {
 
   it('should register database class with singleton scope by default', () => {
     @database()
-    class SingletonScopedDatabase {
-      public open<T>(): T {
-        return 'open' as T;
-      }
-
-      public close<T>(): T {
-        return 'close' as T;
-      }
-    }
+    class SingletonScopedDatabase {}
 
     const instance1 = container.get<SingletonScopedDatabase>(
       SingletonScopedDatabase,
@@ -94,15 +60,7 @@ describe('Database Decorator', () => {
     const callback = () => {
       @database()
       // biome-ignore lint/correctness/noUnusedVariables: trust me
-      class InvalidClass {
-        public open<T>(): T {
-          return 'open' as T;
-        }
-
-        public close<T>(): T {
-          return 'close' as T;
-        }
-      }
+      class InvalidClass {}
     };
 
     expect(callback).toThrow(
@@ -113,15 +71,7 @@ describe('Database Decorator', () => {
 
   it('should properly inject dependencies in database classes', () => {
     @database()
-    class DependencyDatabase {
-      public open<T>(): T {
-        return 'open' as T;
-      }
-
-      public close<T>(): T {
-        return 'close' as T;
-      }
-    }
+    class DependencyDatabase {}
 
     @database()
     class InjectedDatabase {
@@ -129,14 +79,6 @@ describe('Database Decorator', () => {
         @inject(DependencyDatabase)
         public dependency: DependencyDatabase,
       ) {}
-
-      public open<T>(): T {
-        return 'open' as T;
-      }
-
-      public close<T>(): T {
-        return 'close' as T;
-      }
     }
 
     const instance = container.get<InjectedDatabase>(InjectedDatabase);
