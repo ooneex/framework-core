@@ -241,11 +241,8 @@ export type ControllerType = {
 };
 
 export type ConfigType = {
-  new (
-    ...args: any[]
-  ): {
-    get: <T>(...args: any[]) => T;
-  };
+  // biome-ignore lint/complexity/noBannedTypes: <explanation>
+  new (...args: any[]): {};
 };
 
 export type ServiceType = {

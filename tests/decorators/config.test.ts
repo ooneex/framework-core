@@ -4,25 +4,16 @@ import { ConfigDecoratorException, config, container, inject } from '@';
 describe('Config Decorator', () => {
   it('should register a valid config class in the container', () => {
     @config()
-    class TestConfig {
-      public get<T>(): T {
-        return { value: 'test' } as T;
-      }
-    }
+    class TestConfig {}
 
     const instance = container.get<TestConfig>(TestConfig);
     expect(instance).toBeDefined();
     expect(instance).toBeInstanceOf(TestConfig);
-    expect(instance.get<{ value: string }>().value).toBe('test');
   });
 
   it('should register config class with transient scope', () => {
     @config('transient')
-    class TransientScopedConfig {
-      public get<T>(): T {
-        return { value: 'test' } as T;
-      }
-    }
+    class TransientScopedConfig {}
 
     const instance1 = container.get<TransientScopedConfig>(
       TransientScopedConfig,
@@ -37,11 +28,7 @@ describe('Config Decorator', () => {
 
   it('should register config class with request scope', () => {
     @config('request')
-    class RequestScopedConfig {
-      public get<T>(): T {
-        return { value: 'test' } as T;
-      }
-    }
+    class RequestScopedConfig {}
 
     const instance1 = container.get<RequestScopedConfig>(RequestScopedConfig);
     const instance2 = container.get<RequestScopedConfig>(RequestScopedConfig);
@@ -52,11 +39,7 @@ describe('Config Decorator', () => {
 
   it('should register config class with singleton scope by default', () => {
     @config()
-    class SingletonScopedConfig {
-      public get<T>(): T {
-        return { value: 'test' } as T;
-      }
-    }
+    class SingletonScopedConfig {}
 
     const instance1 = container.get<SingletonScopedConfig>(
       SingletonScopedConfig,
@@ -73,11 +56,7 @@ describe('Config Decorator', () => {
     const callback = () => {
       @config()
       // biome-ignore lint/correctness/noUnusedVariables: trust me
-      class InvalidClass {
-        public get<T>(): T {
-          return { value: 'test' } as T;
-        }
-      }
+      class InvalidClass {}
     };
 
     expect(callback).toThrow(
@@ -88,11 +67,7 @@ describe('Config Decorator', () => {
 
   it('should properly inject dependencies in config classes', () => {
     @config()
-    class DependencyConfig {
-      public get<T>(): T {
-        return { value: 'test' } as T;
-      }
-    }
+    class DependencyConfig {}
 
     @config()
     class InjectedConfig {
@@ -100,10 +75,6 @@ describe('Config Decorator', () => {
         @inject(DependencyConfig)
         public dependency: DependencyConfig,
       ) {}
-
-      public get<T>(): T {
-        return { value: 'test' } as T;
-      }
     }
 
     const instance = container.get<InjectedConfig>(InjectedConfig);
