@@ -1,6 +1,7 @@
 export * from './types';
 export * from './status';
 export * from './locales';
+export * from './enums';
 
 export * from './validation/validation';
 export { Assert } from './validation/assert';
@@ -17,7 +18,6 @@ export { validator } from './decorators/validator';
 export { Route } from './decorators/route';
 
 export { App } from './App';
-export { Env } from './enums';
 export { BadRequestException } from './exceptions/BadRequestException';
 export { Exception } from './exceptions/Exception';
 export { MethodNotAllowedException } from './exceptions/MethodNotAllowedException';

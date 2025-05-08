@@ -1,5 +1,12 @@
+import { EContainerScope } from '../enums';
+import { ControllerDecoratorException } from '../exceptions/ControllerDecoratorException';
 import { router } from '../router/Router';
-import type { ControllerType, RouteConfigType } from '../types';
+import type {
+  ContainerScopeType,
+  ControllerType,
+  RouteConfigType,
+} from '../types';
+import { registerWithScope } from './registerWithScope';
 
 export const Route = {
   get: (
@@ -98,6 +105,32 @@ export const Route = {
         ...(config || {}),
         controller: construct,
       });
+    };
+  },
+  notFound: (scope: ContainerScopeType = EContainerScope.Singleton) => {
+    return (notFound: ControllerType) => {
+      const name = notFound.prototype.constructor.name;
+
+      if (!name.endsWith('Controller')) {
+        throw new ControllerDecoratorException(
+          `NotFound decorator can only be used on controller classes. ${name} must end with Controller keyword.`,
+        );
+      }
+
+      registerWithScope(notFound, scope);
+    };
+  },
+  serverError: (scope: ContainerScopeType = EContainerScope.Singleton) => {
+    return (notFound: ControllerType) => {
+      const name = notFound.prototype.constructor.name;
+
+      if (!name.endsWith('Controller')) {
+        throw new ControllerDecoratorException(
+          `ServerError decorator can only be used on controller classes. ${name} must end with Controller keyword.`,
+        );
+      }
+
+      registerWithScope(notFound, scope);
     };
   },
 };
