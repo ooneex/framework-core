@@ -3,7 +3,7 @@
   "type": "module",
   "main": "dist/index.js",
   "types": "dist/index.d.ts",
-  "version": "0.0.3",
+  "version": "0.0.4",
   "description": "Core utilities and interfaces for the Ooneex framework",
   "scripts": {
     "test:watch": "bun test tests --watch",
