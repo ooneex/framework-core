@@ -64,7 +64,7 @@ export type ContextType = {
   response: IResponse;
   exception?: Exception;
   params: Record<string, ScalarType>;
-  payload: Record<string, unknown>;
+  payload: Record<string, any>;
   queries: Record<string, ScalarType>;
   files: Record<string, IRequestFile>;
   cookies: CookieMap | null;
